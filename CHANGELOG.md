@@ -5,6 +5,15 @@ Notable changes to devnull.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `user-commits` failed in an MCP client on the last page of a user's commits, which for most
+  users is the only one: its output schema declared `next_cursor` a string, and on the last page
+  it is null, so a client that checks answers against the schema - Claude Code does - rejected
+  the whole answer.
+
 ## [1.1.1] - 2026-10-18
 
 ### Fixed

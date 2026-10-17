@@ -63,7 +63,9 @@ class UserCommits extends Tool
         return [
             'author' => $schema->string()->description('The user every commit in this page is by.')->required(),
             'count' => $schema->integer()->description('Commits in this page; at most 20.')->required(),
-            'next_cursor' => $schema->string()->description('Pass as `cursor` for the next page; null on the last.'),
+            // nullable: the last page has no cursor, and a client rejects an answer that
+            // breaks the declared type
+            'next_cursor' => $schema->string()->nullable()->description('Pass as `cursor` for the next page; null on the last.'),
             'commits' => $schema->array()->description('The commits, newest first.')->required(),
         ];
     }

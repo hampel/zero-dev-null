@@ -14,9 +14,11 @@ const COMMIT_ID = '01a14614-0274-7293-a35d-6cb58c01d7a1';
 it('returns a profile', function () {
     Http::fake(['dev-null.sh/api/v1/users/acme-dev' => captured('user')]);
 
-    DevNullServer::tool(User::class, ['username' => '@acme-dev'])
+    $response = DevNullServer::tool(User::class, ['username' => '@acme-dev'])
         ->assertOk()
         ->assertSee(['"username":"acme-dev"', '"followers_count"']);
+
+    assertMatchesOutputSchema($response, User::class);
 
     Http::assertSent(fn (Request $request) => $request->url() === 'https://dev-null.sh/api/v1/users/acme-dev');
 });
@@ -24,18 +26,23 @@ it('returns a profile', function () {
 it('lists commits with the author once, not on every commit', function () {
     Http::fake(['dev-null.sh/api/v1/users/acme-dev/commits*' => captured('user-commits')]);
 
-    DevNullServer::tool(UserCommits::class, ['username' => 'acme-dev'])
+    $response = DevNullServer::tool(UserCommits::class, ['username' => 'acme-dev'])
         ->assertOk()
         ->assertSee(['"author":"acme-dev"', '"count":3', '"next_cursor":"eyJ', '"short_hash"'])
         ->assertDontSee('"avatar_url"');
+
+    assertMatchesOutputSchema($response, UserCommits::class);
 });
 
 it('pages with the cursor it was given, and asks for replies when told to', function () {
     Http::fake(['dev-null.sh/api/v1/users/acme-dev/commits*' => captured('user-replies')]);
 
-    DevNullServer::tool(UserCommits::class, ['username' => 'acme-dev', 'replies' => true, 'cursor' => 'eyJabc-_'])
+    $response = DevNullServer::tool(UserCommits::class, ['username' => 'acme-dev', 'replies' => true, 'cursor' => 'eyJabc-_'])
         ->assertOk()
         ->assertSee(['"next_cursor":null', '"parent_id":"01a1']);
+
+    // the last page: next_cursor is null, which the schema has to allow
+    assertMatchesOutputSchema($response, UserCommits::class);
 
     Http::assertSent(fn (Request $request) => $request->url()
         === 'https://dev-null.sh/api/v1/users/acme-dev/commits?replies=1&cursor=eyJabc-_');
@@ -44,10 +51,12 @@ it('pages with the cursor it was given, and asks for replies when told to', func
 it('returns a commit by its id or by its link', function (string $given) {
     Http::fake(['dev-null.sh/api/v1/commits/'.COMMIT_ID => captured('commit-link-preview')]);
 
-    DevNullServer::tool(Commit::class, ['commit' => $given])
+    $response = DevNullServer::tool(Commit::class, ['commit' => $given])
         ->assertOk()
         ->assertSee(['"link_preview"', '"username":"acme-dev"'])
         ->assertDontSee('"avatar_url"');
+
+    assertMatchesOutputSchema($response, Commit::class);
 
     Http::assertSent(fn (Request $request) => $request->url() === 'https://dev-null.sh/api/v1/commits/'.COMMIT_ID);
 })->with([

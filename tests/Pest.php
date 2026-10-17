@@ -3,6 +3,9 @@
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Testing\Fluent\AssertableJson;
+use Laravel\Mcp\Server\Testing\TestResponse;
+use Laravel\Mcp\Server\Tool;
 use Tests\TestCase;
 
 uses(TestCase::class)->in('Feature');
@@ -62,4 +65,50 @@ function captured(string $name, int $status = 200): PromiseInterface
         json_decode((string) file_get_contents(__DIR__."/Fixtures/{$name}.json"), true),
         $status,
     );
+}
+
+/**
+ * Holds a tool's structured answer to the outputSchema it declares, as an MCP client does.
+ *
+ * laravel/mcp's own test helpers never compare the two, and Claude Code rejects an answer that
+ * does not match - which is how `next_cursor: null` against a schema of `string` reached a real
+ * session on 2026-10-18 with every test green. Checks required keys and each key's JSON type;
+ * an empty PHP array passes as either array or object, since JSON cannot tell them apart.
+ *
+ * @param  class-string<Tool>  $tool
+ */
+function assertMatchesOutputSchema(TestResponse $response, string $tool): void
+{
+    $content = null;
+    $response->assertStructuredContent(function (AssertableJson $json) use (&$content) {
+        $content = $json->toArray();
+        $json->etc();
+    });
+
+    $schema = app($tool)->toArray()['outputSchema'] ?? [];
+
+    foreach ($schema['required'] ?? [] as $key) {
+        expect($content)->toHaveKey($key);
+    }
+
+    foreach ($schema['properties'] ?? [] as $key => $property) {
+        if (! array_key_exists($key, $content)) {
+            continue;
+        }
+
+        $value = $content[$key];
+        $actual = match (true) {
+            $value === null => ['null'],
+            is_bool($value) => ['boolean'],
+            is_int($value) => ['integer', 'number'],
+            is_float($value) => ['number'],
+            is_string($value) => ['string'],
+            $value === [] => ['array', 'object'],
+            is_array($value) && array_is_list($value) => ['array'],
+            default => ['object'],
+        };
+
+        expect(array_intersect($actual, (array) ($property['type'] ?? [])))
+            ->not->toBeEmpty("`{$key}` is ".implode('/', $actual).", but {$tool} declares ".json_encode($property['type'] ?? null));
+    }
 }
