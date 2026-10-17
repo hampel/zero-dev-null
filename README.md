@@ -136,11 +136,14 @@ to the commit, and whether it is pending review. On a refusal it exits 1 with /d
 key — the public API takes no authentication.
 
 ```bash
-claude mcp add devnull -- devnull mcp:start devnull
+claude mcp add --scope user devnull -- ~/.local/bin/devnull mcp:start devnull
 ```
 
-Any other client takes the same command; give the full path to the binary if `devnull` is not on
-the PATH the client starts it with.
+**Pass `--scope user`, or it is only there in the directory you ran the command from.** Claude
+Code's default scope is local: the server is registered for that one project, and a session
+started anywhere else does not have it. The full path is for clients started from somewhere other
+than a login shell, whose PATH may not include `~/.local/bin`; any other MCP client takes the
+same command.
 
 | tool | answers with |
 |---|---|
