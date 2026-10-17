@@ -1,5 +1,5 @@
 {
-    "name": "hampel/dev-null-zero",
+    "name": "hampel/zero-dev-null",
     "description": "Commit to /dev/null (dev-null.sh) from the command line, signed with an SSH key on your GitHub account.",
     "keywords": [
         "dev-null",
@@ -7,12 +7,12 @@
         "console",
         "cli"
     ],
-    "homepage": "https://github.com/hampel/dev-null-zero",
+    "homepage": "https://github.com/hampel/zero-dev-null",
     "type": "project",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/hampel/dev-null-zero/issues",
-        "source": "https://github.com/hampel/dev-null-zero"
+        "issues": "https://github.com/hampel/zero-dev-null/issues",
+        "source": "https://github.com/hampel/zero-dev-null"
     },
     "authors": [
         {

@@ -18,12 +18,12 @@ script, as a command you install once rather than a script you pipe into a shell
 ### From a release
 
 Each release publishes a single-file executable and a `SHA256SUMS` to check it against, on the
-[releases page](https://github.com/hampel/dev-null-zero/releases). It needs PHP, and nothing else
+[releases page](https://github.com/hampel/zero-dev-null/releases). It needs PHP, and nothing else
 from Composer:
 
 ```bash
 DEVNULL_VERSION=1.0.0
-BASE=https://github.com/hampel/dev-null-zero/releases/download/$DEVNULL_VERSION
+BASE=https://github.com/hampel/zero-dev-null/releases/download/$DEVNULL_VERSION
 
 curl -LO $BASE/devnull-$DEVNULL_VERSION
 curl -LO $BASE/SHA256SUMS
