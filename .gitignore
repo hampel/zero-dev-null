@@ -1,0 +1,20 @@
+/vendor
+/.idea
+/.vscode
+/.vagrant
+.phpunit.result.cache
+builds/
+
+# Compiled binary, and the box.json build's scratch space
+/.box_dump/
+
+# session notes - local to this clone, never published
+CLAUDE.local.md
+
+# The tool reads no .env, but keep one from ever being committed if it gains one.
+.env
+.env.*
+!.env.example
+
+# NTFS alternate data stream left behind when a file is copied from Windows into WSL.
+*:Zone.Identifier

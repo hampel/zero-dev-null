@@ -1,0 +1,27 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6
+
+    paths:
+        - app
+        - config
+        - tests
+
+    # Keep in step with the `php` constraint in composer.json.
+    phpVersion:
+        min: 80300
+        max: 80499
+
+    ignoreErrors:
+        # Pest's closures bind to the TestCase at runtime; PHPStan sees the PendingCall they
+        # were declared on, so $this->artisan() and the per-test properties look undefined.
+        -
+            identifier: method.notFound
+            message: '#Call to an undefined method Pest\\PendingCalls\\TestCall::artisan\(\)#'
+            path: tests/*
+        -
+            identifier: property.notFound
+            message: '#Access to an undefined property Pest\\PendingCalls\\(TestCall|BeforeEachCall|AfterEachCall)::\$#'
+            path: tests/*
