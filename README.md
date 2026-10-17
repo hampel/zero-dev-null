@@ -65,15 +65,22 @@ curl -LO $BASE/SHA256SUMS
 # file called devnull-<version> until this has passed
 sha256sum --ignore-missing -c SHA256SUMS
 
-install -m 755 devnull-$DEVNULL_VERSION ~/bin/devnull
+mkdir -p ~/.local/bin
+install -m 755 devnull-$DEVNULL_VERSION ~/.local/bin/devnull
 ```
+
+**`~/.local/bin` is on the PATH of most Linux desktops and servers**, but only if it existed when
+you logged in — Ubuntu's and Debian's default `~/.profile` add it conditionally. If `devnull` is
+not found after the first install, open a new login shell. On macOS neither it nor `~/bin` is on
+the PATH by default; use `sudo install -m 755 devnull-$DEVNULL_VERSION /usr/local/bin/devnull`.
 
 ### From source
 
 ```bash
 composer install
 composer build                  # writes builds/devnull
-cp builds/devnull ~/bin/devnull
+mkdir -p ~/.local/bin
+install -m 755 builds/devnull ~/.local/bin/devnull
 ```
 
 ## Choosing a key
