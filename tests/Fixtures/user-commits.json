@@ -1,0 +1,94 @@
+{
+    "data": [
+        {
+            "id": "01a149ad-4121-73ab-9114-9f293cef7611",
+            "short_hash": "cef7611",
+            "body": "Example commit 1, as captured but with its text replaced.",
+            "parent_id": null,
+            "html_url": "https://dev-null.sh/@acme-dev/commits/01a149ad-4121-73ab-9114-9f293cef7611",
+            "created_at": "2026-10-17T11:44:13Z",
+            "stars_count": 24,
+            "replies_count": 14,
+            "link_preview": null,
+            "images": [],
+            "author": {
+                "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+                "username": "acme-dev",
+                "name": "Acme Developer",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
+                "bio": "Builds things at Acme.",
+                "company": "Acme",
+                "location": "Example City",
+                "website": "https://example.com",
+                "github_url": "https://github.com/acme-dev",
+                "html_url": "https://dev-null.sh/@acme-dev",
+                "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
+                "created_at": "2026-10-15T13:02:43Z"
+            }
+        },
+        {
+            "id": "01a14890-59cc-73ac-912f-e3548d577486",
+            "short_hash": "d577486",
+            "body": "Example commit 2, as captured but with its text replaced.",
+            "parent_id": null,
+            "html_url": "https://dev-null.sh/@acme-dev/commits/01a14890-59cc-73ac-912f-e3548d577486",
+            "created_at": "2026-10-17T06:33:02Z",
+            "stars_count": 9,
+            "replies_count": 1,
+            "link_preview": null,
+            "images": [],
+            "author": {
+                "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+                "username": "acme-dev",
+                "name": "Acme Developer",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
+                "bio": "Builds things at Acme.",
+                "company": "Acme",
+                "location": "Example City",
+                "website": "https://example.com",
+                "github_url": "https://github.com/acme-dev",
+                "html_url": "https://dev-null.sh/@acme-dev",
+                "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
+                "created_at": "2026-10-15T13:02:43Z"
+            }
+        },
+        {
+            "id": "01a1484c-8af2-720d-8738-468061385475",
+            "short_hash": "1385475",
+            "body": "Example commit 3, as captured but with its text replaced.",
+            "parent_id": null,
+            "html_url": "https://dev-null.sh/@acme-dev/commits/01a1484c-8af2-720d-8738-468061385475",
+            "created_at": "2026-10-17T05:18:58Z",
+            "stars_count": 90,
+            "replies_count": 17,
+            "link_preview": null,
+            "images": [],
+            "author": {
+                "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+                "username": "acme-dev",
+                "name": "Acme Developer",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
+                "bio": "Builds things at Acme.",
+                "company": "Acme",
+                "location": "Example City",
+                "website": "https://example.com",
+                "github_url": "https://github.com/acme-dev",
+                "html_url": "https://dev-null.sh/@acme-dev",
+                "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
+                "created_at": "2026-10-15T13:02:43Z"
+            }
+        }
+    ],
+    "links": {
+        "first": null,
+        "last": null,
+        "prev": null,
+        "next": "https://dev-null.sh/api/v1/users/acme-dev/commits?cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0xMC0xNiAxMTo1MzozMCIsImlkIjoiMDFhMTQ0OGYtNjMzMS03MTEyLWI0ZDUtYTgxYmZjYmYxYmY0IiwiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ"
+    },
+    "meta": {
+        "path": "https://dev-null.sh/api/v1/users/acme-dev/commits",
+        "per_page": 20,
+        "next_cursor": "eyJjcmVhdGVkX2F0IjoiMjAyNi0xMC0xNiAxMTo1MzozMCIsImlkIjoiMDFhMTQ0OGYtNjMzMS03MTEyLWI0ZDUtYTgxYmZjYmYxYmY0IiwiX3BvaW50c1RvTmV4dEl0ZW1zIjp0cnVlfQ",
+        "prev_cursor": null
+    }
+}

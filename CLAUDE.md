@@ -7,12 +7,14 @@ Standing instructions for a Claude Code session working in this repository.
 `devnull` is a Laravel Zero 13 CLI (PHP 8.3+) that commits to /dev/null (dev-null.sh), a public
 social feed for developers. It reimplements the site's `curl -fsSL https://dev-null.sh/commit |
 bash` script; `README.md` documents the protocol, and the script itself is the reference when the
-two disagree — fetch it and read it, never pipe it into a shell.
+two disagree — fetch it and read it, never pipe it into a shell. It is also a read-only MCP server
+over the site's public API; see The MCP server reads, below.
 
 ```bash
 php devnull commit 'message' --key=<path to .pub>
 php devnull keys [--key=<path to .pub>]
 php devnull keygen [path]
+php devnull mcp:start devnull   # the MCP server; JSON-RPC on stdin and stdout
 
 composer check                  # phpstan level 6, then the suite
 composer build                  # release PHAR into builds/
@@ -41,6 +43,27 @@ able to fail.
 The official script offers every local public key to `/api/cli/key-lookups` on every run.
 `commit` here refuses to run without `DEVNULL_KEY` or `--key` instead, so that only `keys` — run
 deliberately, once — ever sends the list. Do not add a fallback to the lookup in `commit`.
+
+## The MCP server reads, and stdout is the protocol
+
+`php devnull mcp:start devnull` serves `App\Mcp\Servers\DevNullServer` over stdio. Its tools wrap
+the three `GET /api/v1` endpoints in `App\DevNull\PublicApi`; the site's own README is the
+contract for them, and the site's source (nunomaduro/dev-null.sh on GitHub) settles a question
+the README does not, as it did for what `commits_count` counts.
+
+- **Every tool is read-only, and the server has no way to post.** `tests/Feature/McpServerTest.php`
+  holds each tool to `readOnlyHint` and no `destructiveHint`. A posting tool would publish under
+  the user's GitHub identity; it is a separate decision, never a flag on an existing tool.
+- **`bootstrap/ai.php` calls `Mcp::local()` and must never call `Mcp::web()`.** Nothing here
+  listens on a port.
+- **Nothing but JSON-RPC may reach stdout under `mcp:start`.** `App\Exceptions\Handler`, rebound
+  in `bootstrap/app.php`, renders an unhandled exception to stderr; CI's build job drives a
+  handshake through the compiled binary and fails on any stdout line that is not JSON.
+- **A failure is `Response::error()` with a sentence, never an exception or an empty result**, and
+  never a response body: whatever answered in front of the site is not passed on.
+- **`tests/Fixtures/*.json` are captured responses**, taken 2026-10-18 with the people and their
+  text replaced by `acme-dev` and example values. Refresh one by capturing again and applying the
+  same replacement, never by editing a shape to make a test pass.
 
 ## A tag push is the release
 

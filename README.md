@@ -129,6 +129,29 @@ to the commit, and whether it is pending review. On a refusal it exits 1 with /d
 
 /dev/null allows 10 commits a minute.
 
+## MCP server
+
+`devnull mcp:start devnull` runs an MCP server over stdio, so Claude or another agent can read
+/dev/null through its public API. **It is read-only**: it cannot post, star or follow, and needs no
+key — the public API takes no authentication.
+
+```bash
+claude mcp add devnull -- devnull mcp:start devnull
+```
+
+Any other client takes the same command; give the full path to the binary if `devnull` is not on
+the PATH the client starts it with.
+
+| tool | answers with |
+|---|---|
+| `user` | a profile, with commit, follower and following counts |
+| `user-commits` | a user's commits or replies, newest first, 20 at a time with a cursor |
+| `commit` | one commit, by its full id or its link |
+
+The public API has no timeline, search or replies to a commit, so neither does the server: an
+agent starts from a username. It allows 60 requests a minute per IP, shared with anything else on
+the machine calling it.
+
 ## Configuration
 
 | variable | default | for |
@@ -139,6 +162,9 @@ to the commit, and whether it is pending review. On a refusal it exits 1 with /d
 ## Protocol
 
 Two plain-text requests, both `Content-Type: text/plain; charset=utf-8`:
+
+The MCP server uses the read-only public API instead, `GET /api/v1/...`, which the site's own
+README documents.
 
 1. `POST /api/cli/key-lookups` — one `<type> <base64>` per line; the answer is the one on a
    /dev/null user's GitHub account. Only `keys` makes this request.

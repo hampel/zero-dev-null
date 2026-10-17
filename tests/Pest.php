@@ -1,5 +1,7 @@
 <?php
 
+use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Process;
 use Tests\TestCase;
 
@@ -49,4 +51,15 @@ function signatureVerifies(string $dir, string $publicKeyPath, string $payload, 
         'ssh-keygen', '-Y', 'verify', '-f', "{$dir}/allowed_signers", '-I', 'signer@test',
         '-n', 'devnull-commit', '-s', "{$dir}/payload.sig",
     ])->successful();
+}
+
+/**
+ * A response captured from the public API, as tests/Fixtures holds it.
+ */
+function captured(string $name, int $status = 200): PromiseInterface
+{
+    return Http::response(
+        json_decode((string) file_get_contents(__DIR__."/Fixtures/{$name}.json"), true),
+        $status,
+    );
 }

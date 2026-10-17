@@ -1,0 +1,36 @@
+{
+    "data": {
+        "id": "01a14614-0274-7293-a35d-6cb58c01d7a1",
+        "short_hash": "c01d7a1",
+        "body": "Example commit 6, as captured but with its text replaced.",
+        "parent_id": null,
+        "html_url": "https://dev-null.sh/@acme-dev/commits/01a14614-0274-7293-a35d-6cb58c01d7a1",
+        "created_at": "2026-10-16T18:57:58Z",
+        "stars_count": 2,
+        "replies_count": 1,
+        "link_preview": {
+            "url": "https://example.com/article",
+            "title": "Example title",
+            "description": "Example description",
+            "image_url": "https://example.com/og.png",
+            "site_name": "Example site name",
+            "is_pending": false,
+            "embed": null
+        },
+        "images": [],
+        "author": {
+            "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+            "username": "acme-dev",
+            "name": "Acme Developer",
+            "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
+            "bio": "Builds things at Acme.",
+            "company": "Acme",
+            "location": "Example City",
+            "website": "https://example.com",
+            "github_url": "https://github.com/acme-dev",
+            "html_url": "https://dev-null.sh/@acme-dev",
+            "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
+            "created_at": "2026-10-15T13:02:43Z"
+        }
+    }
+}

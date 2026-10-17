@@ -7,6 +7,11 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `mcp:start devnull`: a read-only MCP server over stdio, with `user`, `user-commits` and `commit`
+  tools on the public API.
+
 ## [1.0.0] - 2026-10-18
 
 ### Added

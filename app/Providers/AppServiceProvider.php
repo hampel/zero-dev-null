@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\DevNull\Client;
 use App\DevNull\KeyRing;
+use App\DevNull\PublicApi;
 use App\DevNull\Signer;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
             (string) $app['config']->get('devnull.url'),
             $app->make(Signer::class),
         ));
+
+        $this->app->bind(PublicApi::class, fn ($app) => new PublicApi((string) $app['config']->get('devnull.url')));
     }
 
     public static function home(): string

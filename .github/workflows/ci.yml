@@ -108,6 +108,27 @@ jobs:
             exit 1
           fi
 
+      - name: The MCP server answers, and only in JSON-RPC
+        # Handshake and tool list only - no tool is called, so nothing reaches the site. Box's
+        # compactor rewrites the PHP it packs, and the tools are declared in attributes, so
+        # this is what proves they survive the build. Any stdout line that is not JSON fails
+        # the parse: under mcp:start stdout is the protocol.
+        run: |
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+            '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/list"}' \
+            | timeout 30 ./builds/devnull mcp:start devnull \
+            | python3 -c '
+          import json, sys
+          tools = []
+          for line in sys.stdin:
+              message = json.loads(line)
+              tools += [t["name"] for t in message.get("result", {}).get("tools", [])]
+          print(tools)
+          assert sorted(tools) == ["commit", "user", "user-commits"], tools
+          '
+
   release:
     name: publish the release
     runs-on: ubuntu-latest
