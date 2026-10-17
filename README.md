@@ -132,6 +132,12 @@ suite and compiles the binary on every push; a tag also publishes `devnull-<vers
 the binary, so a binary built before its tag announces the previous release. The release job
 builds from the tag and refuses to publish if `--version` disagrees with it.
 
+**If a tag push starts no workflow run, run it by hand on the tag.** In Actions, choose the `ci`
+workflow, **Run workflow**, and set **Use workflow from** to the tag rather than `master` — the
+release job keys on the ref, so a manual run on a tag publishes exactly as a tag push would. This
+happened with 1.0.0 on 2026-10-18: both refs reached GitHub, the branch push ran and the tag push
+started nothing, with no failed or cancelled run to show for it. The cause was not established.
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
