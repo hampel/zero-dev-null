@@ -4,6 +4,12 @@ use Illuminate\Console\Scheduling\ScheduleFinishCommand;
 use Illuminate\Console\Scheduling\ScheduleListCommand;
 use Illuminate\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Foundation\Console\VendorPublishCommand;
+use Laravel\Mcp\Console\Commands\InspectorCommand;
+use Laravel\Mcp\Console\Commands\MakeAppResourceCommand;
+use Laravel\Mcp\Console\Commands\MakePromptCommand;
+use Laravel\Mcp\Console\Commands\MakeResourceCommand;
+use Laravel\Mcp\Console\Commands\MakeServerCommand;
+use Laravel\Mcp\Console\Commands\MakeToolCommand;
 use LaravelZero\Framework\Commands\StubPublishCommand;
 use NunoMaduro\LaravelConsoleSummary\SummaryCommand;
 use Symfony\Component\Console\Command\DumpCompletionCommand;
@@ -85,8 +91,17 @@ return [
     |
     */
 
-    'remove' => [
-        //
-    ],
+    // laravel/mcp registers its generators and the inspector in every environment, and the
+    // compiled binary is for running the server, not developing one: a generator there would
+    // try to write into the phar. Removed rather than hidden, so they cannot be run either.
+    // Phar::running() is non-empty only inside the built binary, so a checkout keeps them.
+    'remove' => Phar::running() !== '' ? [
+        MakeServerCommand::class,
+        MakeToolCommand::class,
+        MakePromptCommand::class,
+        MakeResourceCommand::class,
+        MakeAppResourceCommand::class,
+        InspectorCommand::class,
+    ] : [],
 
 ];

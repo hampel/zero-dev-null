@@ -61,6 +61,13 @@ the README does not, as it did for what `commits_count` counts.
   handshake through the compiled binary and fails on any stdout line that is not JSON.
 - **A failure is `Response::error()` with a sentence, never an exception or an empty result**, and
   never a response body: whatever answered in front of the site is not passed on.
+- **The binary ships only `commit`, `keygen`, `keys` and `mcp:start`.** `config/commands.php`
+  removes laravel/mcp's generators and inspector when `Phar::running()`, and `App\Kernel` is what
+  makes that work: Laravel Zero's `commands.remove` misses any command loaded lazily through
+  `#[AsCommand]`, which is all of laravel/mcp's. CI fails if the built binary lists anything else.
+  Testing the removal in a checkout by forcing the condition on is safe only for `list` - run a
+  generator before the removal works and it writes into `app/`, which happened once on
+  2026-10-18.
 - **`tests/Fixtures/*.json` are captured responses**, taken 2026-10-18 with the people and their
   text replaced by `acme-dev` and example values. Refresh one by capturing again and applying the
   same replacement, never by editing a shape to make a test pass.

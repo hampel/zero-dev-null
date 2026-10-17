@@ -92,7 +92,16 @@ jobs:
         # the signing path end to end and cannot publish anything.
         run: |
           ./builds/devnull --version
-          ./builds/devnull list > /dev/null
+
+          # Exactly the commands a user should see. laravel/mcp registers its generators and
+          # the inspector lazily, which Laravel Zero's commands.remove misses without
+          # App\Kernel - so a new package command arrives here unannounced unless this fails.
+          listed=$(./builds/devnull list --raw | awk '{print $1}' | sort | tr '\n' ' ')
+          if [ "$listed" != "commit keygen keys mcp:start " ]; then
+            echo "The binary lists: $listed"
+            exit 1
+          fi
+
           ./builds/devnull keygen "$RUNNER_TEMP/ci_ed25519" > /dev/null
 
           set +e

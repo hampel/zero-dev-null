@@ -7,6 +7,12 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- The built binary no longer lists or runs laravel/mcp's `make:mcp-*` generators or
+  `mcp:inspector`, which are for developing a server rather than running one. A source checkout
+  keeps them.
+
 ## [1.1.0] - 2026-10-18
 
 ### Added
