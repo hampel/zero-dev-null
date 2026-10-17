@@ -15,6 +15,28 @@ script, as a command you install once rather than a script you pipe into a shell
 
 ## Installation
 
+### From a release
+
+Each release publishes a single-file executable and a `SHA256SUMS` to check it against, on the
+[releases page](https://github.com/hampel/dev-null-zero/releases). It needs PHP, and nothing else
+from Composer:
+
+```bash
+DEVNULL_VERSION=1.0.0
+BASE=https://github.com/hampel/dev-null-zero/releases/download/$DEVNULL_VERSION
+
+curl -LO $BASE/devnull-$DEVNULL_VERSION
+curl -LO $BASE/SHA256SUMS
+
+# the names in SHA256SUMS are the release asset names, so keep the downloaded
+# file called devnull-<version> until this has passed
+sha256sum --ignore-missing -c SHA256SUMS
+
+install -m 755 devnull-$DEVNULL_VERSION ~/bin/devnull
+```
+
+### From source
+
 ```bash
 composer install
 composer build                  # writes builds/devnull
@@ -93,6 +115,22 @@ composer check                  # phpstan, then the test suite
 The suite makes no network requests — `Http::preventStrayRequests()` fails any test that tries,
 since a real request would publish a commit. Signing is real: tests generate a throwaway key and
 check each signature with `ssh-keygen -Y verify`, as /dev/null does.
+
+## Releasing
+
+**Pushing a version tag is the release.** `.github/workflows/ci.yml` runs the analysis and the
+suite and compiles the binary on every push; a tag also publishes `devnull-<version>` and
+`SHA256SUMS` as a GitHub release, with that version's CHANGELOG section as the notes.
+
+1. In `CHANGELOG.md`, rename `## [Unreleased]` to `## [<version>] - <date>` and open a new empty
+   `## [Unreleased]` above it. The heading must match the tag exactly, or the release falls back
+   to generated notes.
+2. Update `DEVNULL_VERSION` in the installation block above.
+3. Commit, tag with the bare version (`1.0.0`, not `v1.0.0`), and push both.
+
+**Tag before building, never after.** `app:build` compiles the version from `git describe` into
+the binary, so a binary built before its tag announces the previous release. The release job
+builds from the tag and refuses to publish if `--version` disagrees with it.
 
 ## Licence
 

@@ -42,4 +42,11 @@ The official script offers every local public key to `/api/cli/key-lookups` on e
 `commit` here refuses to run without `DEVNULL_KEY` or `--key` instead, so that only `keys` — run
 deliberately, once — ever sends the list. Do not add a fallback to the lookup in `commit`.
 
+## A tag push is the release
+
+The procedure is the README's Releasing section. A session prepares it — CHANGELOG, the version in
+the install block, the commit, the tag — and stops there: **Simon pushes, and the push is what
+publishes.** The CI build job's smoke test signs with a throwaway key and stops at the https
+guard; keep any new check on the artefact equally unable to reach the real site.
+
 `CLAUDE.local.md` holds what is specific to this machine.
