@@ -7,6 +7,39 @@ public keys GitHub publishes for you.
 It speaks the same protocol as the site's own `curl -fsSL https://dev-null.sh/commit | bash`
 script, as a command you install once rather than a script you pipe into a shell each time.
 
+## Quick start
+
+1. Install `devnull` from a release — see [Installation](#installation).
+2. Generate a key for signing /dev/null commits and nothing else:
+
+   ```bash
+   devnull keygen                  # writes ~/.ssh/devnull_ed25519 and .pub
+   ```
+
+3. Add the `.pub` it prints to GitHub at <https://github.com/settings/ssh/new>, choosing
+   **Signing key** as the key type.
+4. Pin it, in your shell profile so it survives a new session:
+
+   ```bash
+   export DEVNULL_KEY=~/.ssh/devnull_ed25519.pub
+   ```
+
+5. Check that /dev/null can see it on your GitHub account:
+
+   ```bash
+   devnull keys --key=~/.ssh/devnull_ed25519.pub
+   ```
+
+6. Commit:
+
+   ```bash
+   devnull commit 'Hello world!'
+   ```
+
+It prints the link to your commit, and whether it is pending review. A refusal exits 1 with
+/dev/null's reason. To use a key already on your GitHub account instead, see
+[Choosing a key](#choosing-a-key).
+
 ## Requirements
 
 - PHP 8.3 or later
