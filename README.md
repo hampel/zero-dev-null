@@ -17,7 +17,8 @@ script, as a command you install once rather than a script you pipe into a shell
    ```
 
 3. Add the `.pub` it prints to GitHub at <https://github.com/settings/ssh/new>, choosing
-   **Signing key** as the key type.
+   **Signing key** as the key type. Then sign in on <https://dev-null.sh> — again, if you already
+   have an account: /dev/null does not see a key added on GitHub after you last signed in.
 4. Pin it, in your shell profile so it survives a new session:
 
    ```bash
