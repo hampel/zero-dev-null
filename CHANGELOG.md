@@ -5,7 +5,7 @@ Notable changes to devnull.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.2] - 2026-10-18
 
 ### Fixed
 
@@ -13,6 +13,11 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
   users is the only one: its output schema declared `next_cursor` a string, and on the last page
   it is null, so a client that checks answers against the schema - Claude Code does - rejected
   the whole answer.
+
+### Changed
+
+- The README registers the MCP server with `claude mcp add --scope user` and the binary's full
+  path. Without `--scope user` the server exists only in the directory the command was run from.
 
 ## [1.1.1] - 2026-10-18
 
