@@ -7,10 +7,20 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-18
+
 ### Added
 
 - `mcp:start devnull`: a read-only MCP server over stdio, with `user`, `user-commits` and `commit`
   tools on the public API.
+- A quick start in the README.
+
+### Changed
+
+- The README installs into `~/.local/bin`, which is on the PATH by default where `~/bin` often
+  is not.
+- The README says to sign in on dev-null.sh again after adding a key on GitHub: the site does not
+  see a key added since the last sign-in.
 
 ## [1.0.0] - 2026-10-18
 
