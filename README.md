@@ -56,7 +56,7 @@ Each release publishes a single-file executable and a `SHA256SUMS` to check it a
 from Composer:
 
 ```bash
-DEVNULL_VERSION=1.1.0
+DEVNULL_VERSION=1.1.1
 BASE=https://github.com/hampel/zero-dev-null/releases/download/$DEVNULL_VERSION
 
 curl -LO $BASE/devnull-$DEVNULL_VERSION
@@ -189,9 +189,10 @@ check each signature with `ssh-keygen -Y verify`, as /dev/null does.
 suite and compiles the binary on every push; a tag also publishes `devnull-<version>` and
 `SHA256SUMS` as a GitHub release, with that version's CHANGELOG section as the notes.
 
-1. In `CHANGELOG.md`, rename `## [Unreleased]` to `## [<version>] - <date>` and open a new empty
-   `## [Unreleased]` above it. The heading must match the tag exactly, or the release falls back
-   to generated notes.
+1. In `CHANGELOG.md`, rename `## [Unreleased]` to `## [<version>] - <date>`. Do not open a new
+   empty one: `## [Unreleased]` exists only while there is a change in it, added above the latest
+   release with that first change. The version heading must match the tag exactly, or the release
+   falls back to generated notes.
 2. Update `DEVNULL_VERSION` in the installation block above.
 3. Commit, tag with the bare version (`1.0.0`, not `v1.0.0`), and push both.
 
