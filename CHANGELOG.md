@@ -5,6 +5,14 @@ Notable changes to devnull.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `commit --image`: attach up to 3 JPEG, PNG or WebP images of up to 10 MB, as the official
+  script's new `--image` does. They are signed by hash in the `devnull-commit-images` namespace
+  and sent as multipart, and a file /dev/null would refuse is refused before anything is sent.
+
 ## [1.1.2] - 2026-10-18
 
 ### Fixed

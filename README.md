@@ -120,12 +120,18 @@ commit either.
 ```bash
 devnull commit 'It was DNS.'
 devnull commit --reply 0be0130 'Agreed!'
+devnull commit --image shipped.png 'Shipped!'
 git log -1 --format=%B | devnull commit       # the message from stdin
 devnull commit                                # prompts for it
 ```
 
-A commit is 3 to 4,000 characters. On success the command prints /dev/null's answer — the link
-to the commit, and whether it is pending review. On a refusal it exits 1 with /dev/null's reason.
+A commit is 3 to 4,000 characters, images or not. `--image` attaches a JPEG, PNG or WebP of up
+to 10 MB and can be given up to 3 times; the type is read from the file's content, not its name,
+and a file /dev/null would refuse is refused before anything is signed or sent. /dev/null also
+limits each side of an image to 6,000 pixels, which only the server checks.
+
+On success the command prints /dev/null's answer — the link to the commit, and whether it is
+pending review. On a refusal it exits 1 with /dev/null's reason.
 
 /dev/null allows 10 commits a minute.
 
@@ -164,17 +170,24 @@ the machine calling it.
 
 ## Protocol
 
-Two plain-text requests, both `Content-Type: text/plain; charset=utf-8`:
+Two requests, both answered in plain text:
+
+1. `POST /api/cli/key-lookups` — `text/plain`, one `<type> <base64>` per line; the answer is the
+   one on a /dev/null user's GitHub account. Only `keys` makes this request.
+2. `POST /api/cli/commits` — `text/plain`, four lines with no trailing newline: Unix timestamp, a
+   32-character hex nonce, the commit replied to (or empty), and the message. The signature from
+   `ssh-keygen -Y sign -n devnull-commit` goes in `X-SSH-Signature`, as the armoured body on one
+   line.
+
+**A commit with images is a different request, not an extra field.** The payload gains a fourth
+line, the lowercase hex SHA-256 of each image comma-separated in upload order, before the
+message. It is signed in the `devnull-commit-images` namespace, so a signature for one form is
+never valid for the other. It is sent as `multipart/form-data`: the payload as a file part named
+`payload`, and each image as `images[]`, which the server hashes and compares with the signed
+line.
 
 The MCP server uses the read-only public API instead, `GET /api/v1/...`, which the site's own
 README documents.
-
-1. `POST /api/cli/key-lookups` — one `<type> <base64>` per line; the answer is the one on a
-   /dev/null user's GitHub account. Only `keys` makes this request.
-2. `POST /api/cli/commits` — four lines with no trailing newline: Unix timestamp, a 32-character
-   hex nonce, the commit replied to (or empty), and the message. The signature from
-   `ssh-keygen -Y sign -n devnull-commit` goes in `X-SSH-Signature`, as the armoured body on one
-   line.
 
 ## Development
 

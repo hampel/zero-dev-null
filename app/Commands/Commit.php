@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use App\DevNull\Client;
 use App\DevNull\DevNullException;
+use App\DevNull\Image;
 use App\DevNull\PublicKey;
 use App\Providers\AppServiceProvider;
 use LaravelZero\Framework\Commands\Command;
@@ -13,6 +14,7 @@ class Commit extends Command
     protected $signature = 'commit
         {message?* : The commit, 3 to 4,000 characters. Read from stdin when it is piped and none is given}
         {--reply= : The hash of a commit, or its link, to reply to}
+        {--image=* : A JPEG, PNG or WebP of up to 10 MB to attach; up to 3 times}
         {--key= : The public key to sign with, overriding DEVNULL_KEY}';
 
     protected $description = 'Commit to /dev/null, signed with your SSH key';
@@ -21,9 +23,16 @@ class Commit extends Command
     {
         try {
             $key = self::pinnedKey($this->option('key'));
+
+            // Read before the message, so a bad image fails before a prompt asks for text.
+            $images = array_map(
+                fn (string $path) => Image::fromFile(AppServiceProvider::expandHome($path)),
+                array_values((array) $this->option('image')),
+            );
+
             $message = $this->message();
 
-            $answer = $client->commit($key, $message, $this->option('reply') ?: null);
+            $answer = $client->commit($key, $message, $this->option('reply') ?: null, $images);
         } catch (DevNullException $e) {
             $this->error('devnull: '.$e->getMessage());
 

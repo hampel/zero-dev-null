@@ -8,7 +8,8 @@ use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 
 /**
- * The two endpoints behind https://dev-null.sh/commit. Both take and return plain text.
+ * The two endpoints behind https://dev-null.sh/commit. Both return plain text, and take it too,
+ * except a commit with images, which is multipart.
  */
 class Client
 {
@@ -45,8 +46,10 @@ class Client
     /**
      * Signs and sends a commit; returns /dev/null's answer - its link, and whether it is
      * pending review.
+     *
+     * @param  list<Image>  $images
      */
-    public function commit(PublicKey $key, string $message, ?string $replyTo = null): string
+    public function commit(PublicKey $key, string $message, ?string $replyTo = null, array $images = []): string
     {
         $length = mb_strlen($message);
 
@@ -61,18 +64,43 @@ class Client
             throw new DevNullException('--reply takes the hash of a commit or its link.');
         }
 
-        $payload = $this->payload($message, $replyTo);
-        $signature = $this->signer->sign($key, $payload);
+        if (count($images) > Image::MAX_IMAGES) {
+            throw new DevNullException(sprintf('A commit can carry up to %d images.', Image::MAX_IMAGES));
+        }
 
-        return $this->text($this->post('/api/cli/commits', $payload, ['X-SSH-Signature' => $signature]));
+        $payload = $this->payload($message, $replyTo, $images);
+
+        if ($images === []) {
+            $signature = $this->signer->sign($key, $payload);
+
+            return $this->text($this->post('/api/cli/commits', $payload, ['X-SSH-Signature' => $signature]));
+        }
+
+        $signature = $this->signer->sign($key, $payload, Signer::IMAGES_NAMESPACE);
+
+        // As the official script sends it: the payload as a file part beside the images, in
+        // the order their hashes were signed. Up to 30 MB, so the timeout is the script's too.
+        $request = $this->request(600)->withHeaders(['X-SSH-Signature' => $signature])
+            ->attach('payload', $payload, 'commit');
+
+        foreach ($images as $position => $image) {
+            $request->attach('images[]', $image->bytes, 'image-'.($position + 1), ['Content-Type' => $image->type]);
+        }
+
+        return $this->text($this->send(fn () => $request->post($this->endpoint('/api/cli/commits'))));
     }
 
     /**
-     * Timestamp, nonce, reply-to and message, one per line, with no trailing newline.
+     * Timestamp, nonce, reply-to and message, one per line, with no trailing newline. With
+     * images, a line of their SHA-256 hashes, comma-separated, goes before the message.
+     *
+     * @param  list<Image>  $images
      */
-    public function payload(string $message, ?string $replyTo = null): string
+    public function payload(string $message, ?string $replyTo = null, array $images = []): string
     {
-        return implode("\n", [time(), bin2hex(random_bytes(16)), $replyTo ?? '', $message]);
+        $hashes = $images === [] ? [] : [implode(',', array_map(fn (Image $image) => $image->sha256(), $images))];
+
+        return implode("\n", [time(), bin2hex(random_bytes(16)), $replyTo ?? '', ...$hashes, $message]);
     }
 
     /**
@@ -80,25 +108,43 @@ class Client
      */
     private function post(string $path, string $body, array $headers = []): Response
     {
+        $endpoint = $this->endpoint($path);
+
+        return $this->send(fn () => $this->request()
+            ->withHeaders($headers)
+            ->withBody($body, 'text/plain; charset=utf-8')
+            ->post($endpoint));
+    }
+
+    /**
+     * The URL to send to, refusing anything but https:// before a byte leaves the machine.
+     */
+    private function endpoint(string $path): string
+    {
         $local = preg_match('#^http://(localhost|127\.0\.0\.1)(:\d+)?/?$#', $this->url);
 
         if (! str_starts_with($this->url, 'https://') && ! $local) {
             throw new DevNullException("Refusing to send your commit to {$this->url}: it is not an https:// URL.");
         }
 
+        return rtrim($this->url, '/').$path;
+    }
+
+    /**
+     * @param  callable(): Response  $send
+     */
+    private function send(callable $send): Response
+    {
         try {
-            return $this->request()
-                ->withHeaders($headers)
-                ->withBody($body, 'text/plain; charset=utf-8')
-                ->post(rtrim($this->url, '/').$path);
+            return $send();
         } catch (ConnectionException) {
             throw new DevNullException("Could not reach {$this->url}.");
         }
     }
 
-    private function request(): PendingRequest
+    private function request(int $timeout = 30): PendingRequest
     {
-        return Http::timeout(30)->withoutRedirecting()->accept('text/plain');
+        return Http::timeout($timeout)->withoutRedirecting()->accept('text/plain');
     }
 
     /**

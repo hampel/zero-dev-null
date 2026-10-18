@@ -44,15 +44,15 @@ function throwawayKey(string $dir, string $name = 'id_ed25519'): string
  * Checks a signature the way /dev/null does: against the public key, in the devnull-commit
  * namespace, over exactly these bytes.
  */
-function signatureVerifies(string $dir, string $publicKeyPath, string $payload, string $signature): bool
+function signatureVerifies(string $dir, string $publicKeyPath, string $payload, string $signature, string $namespace = 'devnull-commit'): bool
 {
     $key = implode(' ', array_slice(explode(' ', trim((string) file_get_contents($publicKeyPath))), 0, 2));
-    file_put_contents("{$dir}/allowed_signers", "signer@test namespaces=\"devnull-commit\" {$key}\n");
+    file_put_contents("{$dir}/allowed_signers", "signer@test namespaces=\"{$namespace}\" {$key}\n");
     file_put_contents("{$dir}/payload.sig", "-----BEGIN SSH SIGNATURE-----\n".chunk_split($signature, 70, "\n")."-----END SSH SIGNATURE-----\n");
 
     return Process::input($payload)->run([
         'ssh-keygen', '-Y', 'verify', '-f', "{$dir}/allowed_signers", '-I', 'signer@test',
-        '-n', 'devnull-commit', '-s', "{$dir}/payload.sig",
+        '-n', $namespace, '-s', "{$dir}/payload.sig",
     ])->successful();
 }
 
