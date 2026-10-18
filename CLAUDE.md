@@ -40,8 +40,8 @@ known to be able to fail; `tests/Feature/CommitImagesTest.php` does the same for
 namespace, and asserts its hashes line against the bytes actually uploaded.
 
 **What the suite does not prove is the multipart request on the wire**: it reads the parts as the
-HTTP client hands them to the fake. Only a real commit with `--image` exercises the server's
-parsing of them.
+HTTP client hands them to the fake. A real commit with `--image` proved it against the site on
+2026-10-18; a change to how the parts are built needs proving the same way, by the user.
 
 ## The pinned key is a decision, not an omission
 
