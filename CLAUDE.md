@@ -8,12 +8,14 @@ Standing instructions for a Claude Code session working in this repository.
 social feed for developers. It reimplements the site's `curl -fsSL https://dev-null.sh/commit |
 bash` script; `README.md` documents the protocol, and the script itself is the reference when the
 two disagree — fetch it and read it, never pipe it into a shell. It is also a read-only MCP server
-over the site's public API; see The MCP server reads, below.
+over the site's public API; see The MCP server reads, below. And `login` signs it in as a device on
+the site's signed API; see A device key can post as the user, below.
 
 ```bash
 php devnull commit 'message' --key=<path to .pub>
 php devnull keys [--key=<path to .pub>]
 php devnull keygen [path]
+php devnull login [--name=…]    # approve this machine as a device; asks for a pasted code
 php devnull mcp:start devnull   # the MCP server; JSON-RPC on stdin and stdout
 
 composer check                  # phpstan level 6, then the suite
@@ -28,6 +30,25 @@ key on the machine to a third party. Both are the user's to run — give them th
 
 **The suite is safe because nothing in it can reach the network**: `tests/TestCase.php` calls
 `Http::preventStrayRequests()`. Keep it there. A test that needs a response fakes one.
+
+## A device key can post as the user
+
+`login` runs the OAuth authorization code flow with PKCE that the site built for its phone app
+(nunomaduro/dev-null.sh#130), and the key it gets approved signs every `/api/v1` request in the
+`devnull-api` namespace. **Approved, that key reads and posts as the user with no GitHub key
+involved**, so:
+
+- **Never complete a `login` against the real site.** Approving is the user's, in their browser.
+  Redeeming a made-up code is safe — it is refused with `invalid_grant` and creates nothing — and
+  is how the signing was proven against the site on 2026-10-19: `invalid_grant` comes only after
+  the signature verifies, where a bad one is `invalid_signature`.
+- **The device key is not `DEVNULL_KEY` and must not become it.** It lives in devnull's config
+  directory, apart from `~/.ssh`, with no passphrase because signed requests run unattended.
+  Revoking a device must not touch the GitHub key, and a GitHub key approved as a device would
+  sign in as the user as well as commit.
+- **The paste is the unproven step.** The code comes back in a redirect to `devnull://`, which
+  nothing here opens; the README says where to copy it from. Which browsers show the link in the
+  address bar was not tested, and only the user can test it.
 
 ## The signature is tested for real, not mocked
 
@@ -66,13 +87,13 @@ the README does not, as it did for what `commits_count` counts.
   handshake through the compiled binary and fails on any stdout line that is not JSON.
 - **A failure is `Response::error()` with a sentence, never an exception or an empty result**, and
   never a response body: whatever answered in front of the site is not passed on.
-- **The binary ships only `commit`, `keygen`, `keys` and `mcp:start`.** `config/commands.php`
-  removes laravel/mcp's generators and inspector when `Phar::running()`, and `App\Kernel` is what
-  makes that work: Laravel Zero's `commands.remove` misses any command loaded lazily through
-  `#[AsCommand]`, which is all of laravel/mcp's. CI fails if the built binary lists anything else.
-  Testing the removal in a checkout by forcing the condition on is safe only for `list` - run a
-  generator before the removal works and it writes into `app/`, which happened once on
-  2026-10-18.
+- **The binary ships only `commit`, `keygen`, `keys`, `login` and `mcp:start`.**
+  `config/commands.php` removes laravel/mcp's generators and inspector when `Phar::running()`, and
+  `App\Kernel` is what makes that work: Laravel Zero's `commands.remove` misses any command loaded
+  lazily through `#[AsCommand]`, which is all of laravel/mcp's. CI fails if the built binary lists
+  anything else. Testing the removal in a checkout by forcing the condition on is safe only for
+  `list` - run a generator before the removal works and it writes into `app/`, which happened once
+  on 2026-10-18.
 - **`tests/Fixtures/*.json` are captured responses**, taken 2026-10-18 with the people and their
   text replaced by `acme-dev` and example values. Refresh one by capturing again and applying the
   same replacement, never by editing a shape to make a test pass.

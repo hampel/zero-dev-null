@@ -5,6 +5,15 @@ Notable changes to devnull.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `login`: approve this machine as a device on /dev/null, the way the site's phone app signs in,
+  for the signed API. It makes its own key in `~/.config/devnull/`, apart from the keys in
+  `~/.ssh`, and takes the code back by paste, since nothing here opens the `devnull://` link it
+  arrives in. Nothing else uses the device yet.
+
 ## [1.2.0] - 2026-10-18
 
 ### Added

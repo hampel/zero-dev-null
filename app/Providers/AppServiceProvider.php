@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\DevNull\Client;
 use App\DevNull\KeyRing;
 use App\DevNull\PublicApi;
+use App\DevNull\SignedApi;
 use App\DevNull\Signer;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +32,28 @@ class AppServiceProvider extends ServiceProvider
         ));
 
         $this->app->bind(PublicApi::class, fn ($app) => new PublicApi((string) $app['config']->get('devnull.url')));
+
+        $this->app->bind(SignedApi::class, fn ($app) => new SignedApi(
+            (string) $app['config']->get('devnull.url'),
+            $app->make(Signer::class),
+        ));
+    }
+
+    /**
+     * The device key's .pub: DEVNULL_DEVICE_KEY, or one in devnull's own config directory, apart
+     * from the keys in ~/.ssh - it signs in as the user, not as a GitHub key.
+     */
+    public static function deviceKeyPath(): string
+    {
+        $configured = config('devnull.device_key');
+
+        if (is_string($configured) && $configured !== '') {
+            return self::expandHome($configured);
+        }
+
+        $config = rtrim((string) getenv('XDG_CONFIG_HOME'), '/') ?: self::home().'/.config';
+
+        return "{$config}/devnull/device_ed25519.pub";
     }
 
     public static function home(): string

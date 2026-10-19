@@ -7,13 +7,16 @@ use Illuminate\Support\Facades\Process;
 /**
  * Signs a commit with `ssh-keygen -Y sign` in the "devnull-commit" namespace, so the signature
  * is good for /dev/null commits only: it cannot sign a git commit or log in anywhere. A commit
- * with images is signed in "devnull-commit-images" instead, and its payload has a line more.
+ * with images is signed in "devnull-commit-images" instead, and its payload has a line more. A
+ * request to the signed API, from an approved device key, is signed in "devnull-api".
  */
 class Signer
 {
     public const string NAMESPACE = 'devnull-commit';
 
     public const string IMAGES_NAMESPACE = 'devnull-commit-images';
+
+    public const string API_NAMESPACE = 'devnull-api';
 
     public function __construct(private readonly KeyRing $keyRing) {}
 
@@ -37,7 +40,7 @@ class Signer
             ->run(['ssh-keygen', '-Y', 'sign', '-n', $namespace, '-f', $signingKey]);
 
         if (! $result->successful()) {
-            throw new DevNullException(trim("Could not sign your commit with {$signingKey}.\n".$result->errorOutput()));
+            throw new DevNullException(trim("Could not sign with {$signingKey}.\n".$result->errorOutput()));
         }
 
         $signature = implode('', array_filter(

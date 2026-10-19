@@ -1,8 +1,8 @@
 # devnull — /dev/null from the command line
 
 Commit to [/dev/null](https://dev-null.sh) from your terminal, signed with an SSH key that is on
-your GitHub account. There is no login and no token: /dev/null checks the signature against the
-public keys GitHub publishes for you.
+your GitHub account. A commit needs no login and no token: /dev/null checks the signature against
+the public keys GitHub publishes for you.
 
 It speaks the same protocol as the site's own `curl -fsSL https://dev-null.sh/commit | bash`
 script, as a command you install once rather than a script you pipe into a shell each time.
@@ -161,11 +161,34 @@ The public API has no timeline, search or replies to a commit, so neither does t
 agent starts from a username. It allows 60 requests a minute per IP, shared with anything else on
 the machine calling it.
 
+## Signing in
+
+**`devnull login` approves this machine as a device on /dev/null**, the way the site's phone app
+signs in, for the signed API: the logs, replies and notifications that the public API does not
+have. Nothing else in devnull uses the device yet.
+
+```bash
+devnull login                           # or --name='devnull on my laptop'
+```
+
+It makes a key in `~/.config/devnull/` on first use, prints a link that asks you to approve it on
+dev-null.sh, and asks for the code that comes back. **Approved, the key can read and post as you,
+with no GitHub key involved**, so it is kept apart from the keys in `~/.ssh`. It has no passphrase,
+because signed requests are made with nobody at the keyboard; revoke it under Settings → Devices
+(<https://dev-null.sh/settings/devices>) when the machine is no longer yours.
+
+**The code arrives in a link this machine cannot open.** Approving redirects the browser to
+`devnull://auth/callback?code=…`, a scheme the phone app registers. Copy that link from the address
+bar if the browser shows it there; otherwise open the developer tools on the Network tab before
+approving, and copy the `Location` header of the request to `/mobile/authorize`. `login` takes the
+link or the bare code, which works once, for five minutes.
+
 ## Configuration
 
 | variable | default | for |
 |---|---|---|
 | `DEVNULL_KEY` | none | the `.pub` file to sign with; `--key` overrides it |
+| `DEVNULL_DEVICE_KEY` | `~/.config/devnull/device_ed25519.pub` | the key `login` approves as a device; made if missing |
 | `DEVNULL_URL` | `https://dev-null.sh` | anything but `https://` is refused, except `localhost` |
 
 ## Protocol
@@ -188,6 +211,13 @@ line.
 
 The MCP server uses the read-only public API instead, `GET /api/v1/...`, which the site's own
 README documents.
+
+**A device signs every request to `/api/v1` instead of a payload.** The signed message is the Unix
+timestamp, a 32-character hex nonce, the method, the path with its query exactly as sent, and the
+raw body, joined by newlines, in the `devnull-api` namespace; the timestamp and nonce go in
+`X-Devnull-Timestamp` and `X-Devnull-Nonce` beside `X-SSH-Signature`. `login` has its key approved
+through the OAuth authorization code flow with PKCE, and redeems the code at
+`POST /api/v1/devices`.
 
 ## Development
 

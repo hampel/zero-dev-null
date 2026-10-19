@@ -97,7 +97,7 @@ jobs:
           # the inspector lazily, which Laravel Zero's commands.remove misses without
           # App\Kernel - so a new package command arrives here unannounced unless this fails.
           listed=$(./builds/devnull list --raw | awk '{print $1}' | sort | tr '\n' ' ')
-          if [ "$listed" != "commit keygen keys mcp:start " ]; then
+          if [ "$listed" != "commit keygen keys login mcp:start " ]; then
             echo "The binary lists: $listed"
             exit 1
           fi

@@ -121,13 +121,22 @@ class Client
      */
     private function endpoint(string $path): string
     {
-        $local = preg_match('#^http://(localhost|127\.0\.0\.1)(:\d+)?/?$#', $this->url);
+        return self::secureEndpoint($this->url, $path, 'your commit');
+    }
 
-        if (! str_starts_with($this->url, 'https://') && ! $local) {
-            throw new DevNullException("Refusing to send your commit to {$this->url}: it is not an https:// URL.");
+    /**
+     * The URL of a path on /dev/null, refusing anything but https:// apart from a local
+     * development server.
+     */
+    public static function secureEndpoint(string $url, string $path, string $what = 'a signed request'): string
+    {
+        $local = preg_match('#^http://(localhost|127\.0\.0\.1)(:\d+)?/?$#', $url);
+
+        if (! str_starts_with($url, 'https://') && ! $local) {
+            throw new DevNullException("Refusing to send {$what} to {$url}: it is not an https:// URL.");
         }
 
-        return rtrim($this->url, '/').$path;
+        return rtrim($url, '/').$path;
     }
 
     /**
