@@ -51,7 +51,9 @@ involved**, so:
   which nothing here opens. On 2026-10-19 the browser dropped that redirect silently — the button
   greyed out, nothing else — so the address bar is no route; copying the `location` header from
   the Network tab worked, and the approved key then answered a signed `GET /api/v1/me`. The real
-  fix is the site accepting a loopback `redirect_uri` (RFC 8252), which is upstream's to make.
+  fix is the site accepting a loopback `redirect_uri` (RFC 8252), which is upstream's to make:
+  proposed in nunomaduro/dev-null.sh#563 on 2026-10-19. If it lands, `login` should listen on a
+  random local port and catch the code itself, and the paste and the README's DevTools steps go.
 
 ## The signature is tested for real, not mocked
 
