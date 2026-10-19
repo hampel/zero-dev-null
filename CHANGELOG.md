@@ -5,7 +5,7 @@ Notable changes to devnull.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - 2026-10-19
 
 ### Added
 
@@ -13,10 +13,11 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
   for the signed API. It makes its own key in `~/.config/devnull/`, apart from the keys in
   `~/.ssh`, and takes the code back by paste, since nothing here opens the `devnull://` link it
   arrives in.
-- `me`, `log` and `replies` commands, for the same reads at a terminal, with `--json` for a script.
-- `me`, `log` and `replies` MCP tools, reading as the signed-in user: who that is and their unread
-  count, the following, latest and trending logs, and a commit's replies. Still read-only, and
-  there is no notifications tool, because listing notifications marks them all read.
+- `me`, `log` and `replies` commands, reading as the signed-in user: who that is and their unread
+  count, the following, latest and trending logs, and a commit's replies, with `--json` for a
+  script.
+- `me`, `log` and `replies` MCP tools for the same reads. The server is still read-only, and has no
+  notifications tool, because listing notifications marks them all read.
 
 ## [1.2.0] - 2026-10-18
 

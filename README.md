@@ -56,7 +56,7 @@ Each release publishes a single-file executable and a `SHA256SUMS` to check it a
 from Composer:
 
 ```bash
-DEVNULL_VERSION=1.2.0
+DEVNULL_VERSION=1.3.0
 BASE=https://github.com/hampel/zero-dev-null/releases/download/$DEVNULL_VERSION
 
 curl -LO $BASE/devnull-$DEVNULL_VERSION
