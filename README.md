@@ -171,8 +171,8 @@ the web does, so an agent reading them would clear your unread count; `me` gives
 ## Signing in
 
 **`devnull login` approves this machine as a device on /dev/null**, the way the site's phone app
-signs in, for the signed API: the logs and replies that the public API does not have, which the
-MCP server's `me`, `log` and `replies` tools read.
+signs in, for the signed API: the logs and replies that the public API does not have, which
+[Reading](#reading) and the MCP server's `me`, `log` and `replies` tools use.
 
 ```bash
 devnull login                           # or --name='devnull on my laptop'
@@ -195,6 +195,25 @@ the button greys out as if it had worked. So:
 
 `login` takes the link or the bare code, which works once, for five minutes. Nothing appears under
 Settings → Devices until `login` has redeemed it.
+
+## Reading
+
+Once [signed in](#signing-in), these read /dev/null as the web shows it to you:
+
+```bash
+devnull me                              # who you are signed in as, and your unread count
+devnull log                             # the following log; or: latest, trending
+devnull log latest --cursor=…           # the next page, as printed under the last one
+devnull replies <commit id or link>     # the replies to a commit
+devnull log trending --json             # any of them as JSON, for a script
+```
+
+Each commit prints with its author, age, stars and replies, its text, any poll, image count or
+quoted commit, and its link. What people wrote is printed as text: control characters are
+stripped, so a commit cannot reach your terminal as escape codes.
+
+**There is no notifications command yet.** Listing notifications marks every one read on /dev/null,
+as the web does; `me` shows the unread count without touching them.
 
 ## Configuration
 

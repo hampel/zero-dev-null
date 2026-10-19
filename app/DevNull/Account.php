@@ -71,8 +71,8 @@ class Account
     private function get(string $path, array $query, string $notFound): array
     {
         $key = PublicKey::read($this->keyPath)
-            ?? throw new DevNullException('This machine is not signed in to /dev/null. Run `devnull login` in a terminal: '
-                .'it signs in through a browser, so an agent cannot do it.');
+            ?? throw new DevNullException('This machine is not signed in to /dev/null. Run `devnull login` in a terminal; '
+                .'it signs in through a browser.');
 
         $query = http_build_query(array_filter($query, fn (?string $value) => $value !== null), '', '&', PHP_QUERY_RFC3986);
 

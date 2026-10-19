@@ -16,6 +16,7 @@ php devnull commit 'message' --key=<path to .pub>
 php devnull keys [--key=<path to .pub>]
 php devnull keygen [path]
 php devnull login [--name=…]    # approve this machine as a device; asks for a pasted code
+php devnull me | log [following|latest|trending] | replies <commit>   # read as the device
 php devnull mcp:start devnull   # the MCP server; JSON-RPC on stdin and stdout
 
 composer check                  # phpstan level 6, then the suite
@@ -97,7 +98,8 @@ read, which is not in the README at all.
   handshake through the compiled binary and fails on any stdout line that is not JSON.
 - **A failure is `Response::error()` with a sentence, never an exception or an empty result**, and
   never a response body: whatever answered in front of the site is not passed on.
-- **The binary ships only `commit`, `keygen`, `keys`, `login` and `mcp:start`.**
+- **The binary ships only `commit`, `keygen`, `keys`, `login`, `me`, `log`, `replies` and
+  `mcp:start`.**
   `config/commands.php` removes laravel/mcp's generators and inspector when `Phar::running()`, and
   `App\Kernel` is what makes that work: Laravel Zero's `commands.remove` misses any command loaded
   lazily through `#[AsCommand]`, which is all of laravel/mcp's. CI fails if the built binary lists
