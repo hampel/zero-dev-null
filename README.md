@@ -138,8 +138,9 @@ pending review. On a refusal it exits 1 with /dev/null's reason.
 ## MCP server
 
 `devnull mcp:start devnull` runs an MCP server over stdio, so Claude or another agent can read
-/dev/null through its public API. **It is read-only**: it cannot post, star or follow, and needs no
-key — the public API takes no authentication.
+/dev/null: through its public API, which needs no key, and as you once you have
+[signed in](#signing-in). **It is read-only**: it cannot post, star, follow or mark notifications
+read.
 
 ```bash
 claude mcp add --scope user devnull -- ~/.local/bin/devnull mcp:start devnull
@@ -151,21 +152,27 @@ started anywhere else does not have it. The full path is for clients started fro
 than a login shell, whose PATH may not include `~/.local/bin`; any other MCP client takes the
 same command.
 
-| tool | answers with |
-|---|---|
-| `user` | a profile, with commit, follower and following counts |
-| `user-commits` | a user's commits or replies, newest first, 20 at a time with a cursor |
-| `commit` | one commit, by its full id or its link |
+| tool | needs | answers with |
+|---|---|---|
+| `user` | nothing | a profile, with commit, follower and following counts |
+| `user-commits` | nothing | a user's commits or replies, newest first, 20 at a time with a cursor |
+| `commit` | nothing | one commit, by its full id or its link |
+| `me` | `login` | who you are signed in as, and how many notifications are unread |
+| `log` | `login` | the following, latest or trending log as the web shows it to you, 20 at a time |
+| `replies` | `login` | the replies to a commit, 50 at a time |
 
-The public API has no timeline, search or replies to a commit, so neither does the server: an
-agent starts from a username. It allows 60 requests a minute per IP, shared with anything else on
-the machine calling it.
+**Without `login`, an agent starts from a username**: the public API has no log, search or replies
+to a commit. It allows 60 requests a minute per IP, shared with anything else on the machine
+calling it; signed requests are allowed 120 a minute for your account.
+
+**There is no notifications tool, on purpose.** Listing them marks every one read on /dev/null, as
+the web does, so an agent reading them would clear your unread count; `me` gives the count alone.
 
 ## Signing in
 
 **`devnull login` approves this machine as a device on /dev/null**, the way the site's phone app
-signs in, for the signed API: the logs, replies and notifications that the public API does not
-have. Nothing else in devnull uses the device yet.
+signs in, for the signed API: the logs and replies that the public API does not have, which the
+MCP server's `me`, `log` and `replies` tools read.
 
 ```bash
 devnull login                           # or --name='devnull on my laptop'
@@ -215,8 +222,8 @@ never valid for the other. It is sent as `multipart/form-data`: the payload as a
 `payload`, and each image as `images[]`, which the server hashes and compares with the signed
 line.
 
-The MCP server uses the read-only public API instead, `GET /api/v1/...`, which the site's own
-README documents.
+The MCP server reads the API instead, `GET /api/v1/...`, which the site's own README documents:
+unsigned for the public tools, and signed by the device for the rest.
 
 **A device signs every request to `/api/v1` instead of a payload.** The signed message is the Unix
 timestamp, a 32-character hex nonce, the method, the path with its query exactly as sent, and the

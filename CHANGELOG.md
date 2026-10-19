@@ -12,7 +12,10 @@ this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 - `login`: approve this machine as a device on /dev/null, the way the site's phone app signs in,
   for the signed API. It makes its own key in `~/.config/devnull/`, apart from the keys in
   `~/.ssh`, and takes the code back by paste, since nothing here opens the `devnull://` link it
-  arrives in. Nothing else uses the device yet.
+  arrives in.
+- `me`, `log` and `replies` MCP tools, reading as the signed-in user: who that is and their unread
+  count, the following, latest and trending logs, and a commit's replies. Still read-only, and
+  there is no notifications tool, because listing notifications marks them all read.
 
 ## [1.2.0] - 2026-10-18
 

@@ -2,12 +2,15 @@
 
 use App\Mcp\Servers\DevNullServer;
 use App\Mcp\Tools\Commit;
+use App\Mcp\Tools\Log;
+use App\Mcp\Tools\Me;
+use App\Mcp\Tools\Replies;
 use App\Mcp\Tools\User;
 use App\Mcp\Tools\UserCommits;
 use Laravel\Mcp\Facades\Mcp;
 use Laravel\Mcp\Server\Tool;
 
-const TOOLS = [User::class, UserCommits::class, Commit::class];
+const TOOLS = [User::class, UserCommits::class, Commit::class, Me::class, Log::class, Replies::class];
 
 it('registers every tool', function () {
     DevNullServer::tools()->assertRegistered(TOOLS);

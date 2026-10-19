@@ -74,10 +74,18 @@ deliberately, once — ever sends the list. Do not add a fallback to the lookup 
 
 ## The MCP server reads, and stdout is the protocol
 
-`php devnull mcp:start devnull` serves `App\Mcp\Servers\DevNullServer` over stdio. Its tools wrap
-the three `GET /api/v1` endpoints in `App\DevNull\PublicApi`; the site's own README is the
-contract for them, and the site's source (nunomaduro/dev-null.sh on GitHub) settles a question
-the README does not, as it did for what `commits_count` counts.
+`php devnull mcp:start devnull` serves `App\Mcp\Servers\DevNullServer` over stdio. Three tools wrap
+the public `GET /api/v1` endpoints in `App\DevNull\PublicApi`, and three more read as the user
+through `App\DevNull\Account`, signed by the device key. The site's own README is the contract
+for them, and the site's source (nunomaduro/dev-null.sh on GitHub) settles a question the README
+does not, as it did for what `commits_count` counts — and that listing notifications marks them
+read, which is not in the README at all.
+
+- **A tool is read-only when reading changes nothing on the site, not when it is a GET.**
+  `GET /api/v1/notifications` marks every notification read, as the web does, so there is no
+  notifications tool, and the group endpoint is useless without it. Check the controller before
+  wrapping any new signed endpoint: the PR that added them (nunomaduro/dev-null.sh#130) is where
+  to start.
 
 - **Every tool is read-only, and the server has no way to post.** `tests/Feature/McpServerTest.php`
   holds each tool to `readOnlyHint` and no `destructiveHint`. A posting tool would publish under
@@ -97,8 +105,9 @@ the README does not, as it did for what `commits_count` counts.
   `list` - run a generator before the removal works and it writes into `app/`, which happened once
   on 2026-10-18.
 - **`tests/Fixtures/*.json` are captured responses**, taken 2026-10-18 with the people and their
-  text replaced by `acme-dev` and example values. Refresh one by capturing again and applying the
-  same replacement, never by editing a shape to make a test pass.
+  text replaced by `acme-dev` and example values; `me`, `log-latest` and `replies` were taken
+  signed on 2026-10-19, with ids, cursors and poll options replaced too. Refresh one by capturing
+  again and applying the same replacement, never by editing a shape to make a test pass.
 
 ## A tag push is the release
 

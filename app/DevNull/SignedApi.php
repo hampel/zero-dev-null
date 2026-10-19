@@ -90,6 +90,8 @@ class SignedApi
             $message .= " Try again in {$retry} seconds.";
         }
 
-        throw new DevNullException($message);
+        $code = is_array($answer) && is_string($answer['code'] ?? null) ? $answer['code'] : null;
+
+        throw new SignedApiException($message, $response->status(), $code);
     }
 }

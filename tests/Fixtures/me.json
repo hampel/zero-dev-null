@@ -1,0 +1,21 @@
+{
+  "data": {
+    "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+    "username": "acme-dev",
+    "name": "Acme Developer",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
+    "bio": "Builds things at Acme.",
+    "company": "Acme",
+    "location": "Example City",
+    "website": "https://example.com",
+    "github_url": "https://github.com/acme-dev",
+    "html_url": "https://dev-null.sh/@acme-dev",
+    "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
+    "created_at": "2026-10-15T13:02:43Z",
+    "lane": 3,
+    "commits_count": 25,
+    "followers_count": 16,
+    "following_count": 13
+  },
+  "unread_notifications_count": 2
+}

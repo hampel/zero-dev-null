@@ -135,7 +135,7 @@ jobs:
               message = json.loads(line)
               tools += [t["name"] for t in message.get("result", {}).get("tools", [])]
           print(tools)
-          assert sorted(tools) == ["commit", "user", "user-commits"], tools
+          assert sorted(tools) == ["commit", "log", "me", "replies", "user", "user-commits"], tools
           '
 
   release:

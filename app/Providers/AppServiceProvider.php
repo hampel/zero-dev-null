@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\DevNull\Account;
 use App\DevNull\Client;
 use App\DevNull\KeyRing;
 use App\DevNull\PublicApi;
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
             (string) $app['config']->get('devnull.url'),
             $app->make(Signer::class),
         ));
+
+        $this->app->bind(Account::class, fn ($app) => new Account($app->make(SignedApi::class), self::deviceKeyPath()));
     }
 
     /**
