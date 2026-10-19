@@ -46,9 +46,11 @@ involved**, so:
   directory, apart from `~/.ssh`, with no passphrase because signed requests run unattended.
   Revoking a device must not touch the GitHub key, and a GitHub key approved as a device would
   sign in as the user as well as commit.
-- **The paste is the unproven step.** The code comes back in a redirect to `devnull://`, which
-  nothing here opens; the README says where to copy it from. Which browsers show the link in the
-  address bar was not tested, and only the user can test it.
+- **The code comes back by hand, from the developer tools.** It arrives in a 303 to `devnull://`,
+  which nothing here opens. On 2026-10-19 the browser dropped that redirect silently — the button
+  greyed out, nothing else — so the address bar is no route; copying the `location` header from
+  the Network tab worked, and the approved key then answered a signed `GET /api/v1/me`. The real
+  fix is the site accepting a loopback `redirect_uri` (RFC 8252), which is upstream's to make.
 
 ## The signature is tested for real, not mocked
 

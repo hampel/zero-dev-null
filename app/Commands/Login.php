@@ -40,18 +40,16 @@ class Login extends Command
 
             $this->line("Device key: {$key->path} ({$key->fingerprint()})");
             $this->newLine();
-            $this->line('1. Open this link and approve the key above. It signs in as whoever is signed in on');
-            $this->line('   /dev/null in that browser.');
+            $this->line('1. Open this link. It signs in as whoever is signed in on /dev/null in that browser.');
             $this->newLine();
             $this->line('   '.$authorization->url($page, $key, $name));
             $this->newLine();
-            $this->line('2. Approving sends your browser to a devnull:// link, which is meant for the /dev/null');
-            $this->line('   phone app. Nothing here opens it, so the browser shows an error or seems to do nothing.');
-            $this->line('   The code is in that link:');
-            $this->line('   - if the address bar shows devnull://auth/callback?code=…, copy it from there;');
-            $this->line('   - otherwise open the developer tools on the Network tab before you approve, and copy');
-            $this->line('     the Location header of the request to /mobile/authorize.');
-            $this->line('   It works once, for 5 minutes.');
+            $this->line('2. Before you approve, open the developer tools (F12) on the Network tab. Approving sends');
+            $this->line('   the browser to a devnull:// link meant for the /dev/null phone app, which nothing here');
+            $this->line('   opens, so the browser drops it and the page seems to do nothing.');
+            $this->newLine();
+            $this->line('3. Approve, select the "authorize" request (a 303), and copy its Location response');
+            $this->line('   header: devnull://auth/callback?code=…. It works once, for 5 minutes.');
             $this->newLine();
 
             $code = $authorization->code((string) $this->ask('Paste the devnull:// link, or the code from it'));

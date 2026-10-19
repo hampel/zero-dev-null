@@ -177,11 +177,17 @@ with no GitHub key involved**, so it is kept apart from the keys in `~/.ssh`. It
 because signed requests are made with nobody at the keyboard; revoke it under Settings → Devices
 (<https://dev-null.sh/settings/devices>) when the machine is no longer yours.
 
-**The code arrives in a link this machine cannot open.** Approving redirects the browser to
-`devnull://auth/callback?code=…`, a scheme the phone app registers. Copy that link from the address
-bar if the browser shows it there; otherwise open the developer tools on the Network tab before
-approving, and copy the `Location` header of the request to `/mobile/authorize`. `login` takes the
-link or the bare code, which works once, for five minutes.
+**The code arrives in a link this machine cannot open, so open the developer tools before you
+approve.** Approving redirects the browser to `devnull://auth/callback?code=…`, a scheme the phone
+app registers; with nothing registered for it, the browser drops the redirect without a word, and
+the button greys out as if it had worked. So:
+
+1. Open the link `login` prints, then the developer tools (F12) on the Network tab.
+2. Approve, and select the `authorize` request, a 303.
+3. Copy its `location` response header and paste it at the prompt.
+
+`login` takes the link or the bare code, which works once, for five minutes. Nothing appears under
+Settings → Devices until `login` has redeemed it.
 
 ## Configuration
 
