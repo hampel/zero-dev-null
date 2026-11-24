@@ -1,6 +1,8 @@
 <?php
 
 use App\Providers\AppServiceProvider;
+use Illuminate\Translation\TranslationServiceProvider;
+use Illuminate\Validation\ValidationServiceProvider;
 
 return [
 
@@ -57,6 +59,9 @@ return [
 
     'providers' => [
         AppServiceProvider::class,
+        // laravel/mcp validates every JSON-RPC call's params through the Validator facade.
+        TranslationServiceProvider::class,
+        ValidationServiceProvider::class,
     ],
 
 ];
