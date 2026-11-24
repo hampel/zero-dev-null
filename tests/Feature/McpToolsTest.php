@@ -14,9 +14,9 @@ const COMMIT_ID = '01a14614-0274-7293-a35d-6cb58c01d7a1';
 it('returns a profile', function () {
     Http::fake(['dev-null.sh/api/v1/users/acme-dev' => captured('user')]);
 
-    $response = DevNullServer::tool(User::class, ['username' => '@acme-dev'])
+    $response = DevNullServer::tool(User::class, ['handle' => '@acme-dev'])
         ->assertOk()
-        ->assertSee(['"username":"acme-dev"', '"followers_count"']);
+        ->assertSee(['"handle":"acme-dev"', '"followers_count"']);
 
     assertMatchesOutputSchema($response, User::class);
 
@@ -26,7 +26,7 @@ it('returns a profile', function () {
 it('lists commits with the author once, not on every commit', function () {
     Http::fake(['dev-null.sh/api/v1/users/acme-dev/commits*' => captured('user-commits')]);
 
-    $response = DevNullServer::tool(UserCommits::class, ['username' => 'acme-dev'])
+    $response = DevNullServer::tool(UserCommits::class, ['handle' => 'acme-dev'])
         ->assertOk()
         ->assertSee(['"author":"acme-dev"', '"count":3', '"next_cursor":"eyJ', '"short_hash"'])
         ->assertDontSee('"avatar_url"');
@@ -37,7 +37,7 @@ it('lists commits with the author once, not on every commit', function () {
 it('pages with the cursor it was given, and asks for replies when told to', function () {
     Http::fake(['dev-null.sh/api/v1/users/acme-dev/commits*' => captured('user-replies')]);
 
-    $response = DevNullServer::tool(UserCommits::class, ['username' => 'acme-dev', 'replies' => true, 'cursor' => 'eyJabc-_'])
+    $response = DevNullServer::tool(UserCommits::class, ['handle' => 'acme-dev', 'replies' => true, 'cursor' => 'eyJabc-_'])
         ->assertOk()
         ->assertSee(['"next_cursor":null', '"parent_id":"01a1']);
 
@@ -53,7 +53,7 @@ it('returns a commit by its id or by its link', function (string $given) {
 
     $response = DevNullServer::tool(Commit::class, ['commit' => $given])
         ->assertOk()
-        ->assertSee(['"link_preview"', '"username":"acme-dev"'])
+        ->assertSee(['"link_preview"', '"type":"user","handle":"acme-dev"'])
         ->assertDontSee('"avatar_url"');
 
     assertMatchesOutputSchema($response, Commit::class);
@@ -96,7 +96,7 @@ it('never passes on what the server said', function () {
 it('says an unknown user is unknown', function () {
     Http::fake(['dev-null.sh/*' => captured('not-found-user', 404)]);
 
-    DevNullServer::tool(User::class, ['username' => 'nobody'])->assertHasErrors(['no /dev/null user named nobody']);
+    DevNullServer::tool(User::class, ['handle' => 'nobody'])->assertHasErrors(['no /dev/null user named nobody']);
 });
 
 it('refuses what it cannot look up without asking the site', function (string $tool, array $arguments, string $expected) {
@@ -106,6 +106,6 @@ it('refuses what it cannot look up without asking the site', function (string $t
 })->with([
     'a short hash' => [Commit::class, ['commit' => '960889a'], 'is a short hash'],
     'not a commit' => [Commit::class, ['commit' => '../users/x'], 'must be a commit\'s full `id`'],
-    'not a username' => [User::class, ['username' => 'a/b'], 'must be a GitHub username'],
-    'a forged cursor' => [UserCommits::class, ['username' => 'acme-dev', 'cursor' => 'x&replies=0'], 'must be the `next_cursor`'],
+    'not a handle' => [User::class, ['handle' => 'a/b'], 'must be a GitHub username'],
+    'a forged cursor' => [UserCommits::class, ['handle' => 'acme-dev', 'cursor' => 'x&replies=0'], 'must be the `next_cursor`'],
 ]);

@@ -26,8 +26,9 @@ use Laravel\Mcp\Server\Attributes\Name;
     Nothing here posts, stars, follows or marks notifications read.
 
     Public, needing nothing: user gives a profile; user-commits gives a user's commits or their replies, 20 at a
-    time with a cursor; commit gives one commit by its full id or its link. A username is the user's GitHub
-    username. Only approved commits are public, so "not found" can mean pending review, rejected or deleted.
+    time with a cursor; commit gives one commit by its full id or its link. A user's handle is their GitHub
+    username; an author whose type is organization is not a user, and these cannot read one. Only approved
+    commits are public, so "not found" can mean pending review, rejected or deleted.
 
     As the signed-in user, once they have run `devnull login` in a terminal: me says who that is and how many
     notifications are unread; log gives the following, latest or trending timeline; replies lists the replies to a

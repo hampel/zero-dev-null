@@ -61,8 +61,8 @@ class Login extends Command
         }
 
         $who = is_string($user['name'] ?? null) && $user['name'] !== ''
-            ? Client::sanitize($user['name']).' (@'.Client::sanitize($user['username']).')'
-            : '@'.Client::sanitize($user['username']);
+            ? Client::sanitize($user['name']).' (@'.Client::sanitize($user['handle']).')'
+            : '@'.Client::sanitize($user['handle']);
 
         $this->info("Signed in as {$who}.");
         $this->line('This key can now read and post on /dev/null as you. Revoke it under Settings → Devices:');

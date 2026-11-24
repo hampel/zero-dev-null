@@ -29,19 +29,19 @@ it('says who is signed in', function () {
 
     $this->artisan('me')
         ->expectsOutputToContain('Acme Developer @acme-dev')
-        ->expectsOutputToContain('25 commits and replies · 16 followers · 13 following · 2 unread notifications')
+        ->expectsOutputToContain('78 commits and replies · 50 followers · 75 following · 0 unread notifications')
         ->assertSuccessful();
 });
 
-it('prints a log, with its polls, quotes and the way to the next page', function () {
+it('prints a log, with its polls, quotes, organizations and the way to the next page', function () {
     Http::fake(['dev-null.sh/api/v1/log/latest*' => captured('log-latest')]);
 
     $this->artisan('log', ['log' => 'latest'])
-        ->expectsOutputToContain('3 stars · 16 replies')
+        ->expectsOutputToContain('1 star · 1 reply')
         ->expectsOutputToContain('  Example commit 1, as captured but with its text replaced.')
-        ->expectsOutputToContain('Poll: Option 1 | Option 2 | Option 3 | Option 4')
+        ->expectsOutputToContain('Poll: Option 1 | Option 2 | Option 3')
         ->expectsOutputToContain('Quoting:')
-        ->expectsOutputToContain('https://dev-null.sh/@acme-dev/commits/01a15000-0000-7000-8000-000000000003')
+        ->expectsOutputToContain('https://dev-null.sh/@example-org/commits/01a15000-0000-7000-8000-000000000003')
         ->expectsOutputToContain('More: devnull log latest --cursor=eyJ')
         ->assertSuccessful();
 
@@ -81,12 +81,12 @@ it('prints replies, and says when there are none', function () {
         ->push(json_decode((string) file_get_contents(__DIR__.'/../Fixtures/replies.json'), true))
         ->push(['data' => [], 'meta' => ['next_cursor' => null]])]);
 
-    $this->artisan('replies', ['commit' => 'https://dev-null.sh/@acme-dev/commits/01a15000-0000-7000-8000-000000000003'])
+    $this->artisan('replies', ['commit' => 'https://dev-null.sh/@example-dev/commits/01a15000-0000-7000-8000-000000000001'])
         ->expectsOutputToContain('Example commit 500')
         ->doesntExpectOutputToContain('More:')
         ->assertSuccessful();
 
-    $this->artisan('replies', ['commit' => '01a15000-0000-7000-8000-000000000003'])
+    $this->artisan('replies', ['commit' => '01a15000-0000-7000-8000-000000000001'])
         ->expectsOutputToContain('No replies yet.')
         ->assertSuccessful();
 });

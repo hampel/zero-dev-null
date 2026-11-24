@@ -28,12 +28,12 @@ class UserCommits extends Tool
 {
     public function handle(Request $request, PublicApi $api): Response|ResponseFactory
     {
-        $username = ltrim(trim((string) $request->get('username', '')), '@');
+        $handle = ltrim(trim((string) $request->get('handle', '')), '@');
         $cursor = $request->get('cursor');
 
         try {
             $page = $api->userCommits(
-                $username,
+                $handle,
                 (bool) $request->get('replies', false),
                 is_string($cursor) && $cursor !== '' ? $cursor : null,
             );
@@ -42,7 +42,7 @@ class UserCommits extends Tool
         }
 
         return Response::structured([
-            'author' => $username,
+            'author' => $handle,
             'count' => count($page['data']),
             'next_cursor' => $page['next_cursor'],
             'commits' => array_map(Present::listed(...), $page['data']),
@@ -52,7 +52,7 @@ class UserCommits extends Tool
     public function schema(JsonSchema $schema): array
     {
         return [
-            'username' => $schema->string()->description('The username, with or without a leading @.')->required(),
+            'handle' => $schema->string()->description('The user\'s handle, with or without a leading @.')->required(),
             'replies' => $schema->boolean()->description('True for the user\'s replies instead of their own commits.'),
             'cursor' => $schema->string()->description('The `next_cursor` from the previous page, to read the next one.'),
         ];
@@ -61,7 +61,7 @@ class UserCommits extends Tool
     public function outputSchema(JsonSchema $schema): array
     {
         return [
-            'author' => $schema->string()->description('The user every commit in this page is by.')->required(),
+            'author' => $schema->string()->description('The handle of the user every commit in this page is by.')->required(),
             'count' => $schema->integer()->description('Commits in this page; at most 20.')->required(),
             // nullable: the last page has no cursor, and a client rejects an answer that
             // breaks the declared type

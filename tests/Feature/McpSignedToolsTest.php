@@ -7,7 +7,7 @@ use App\Mcp\Tools\Replies;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 
-const PARENT_ID = '01a15000-0000-7000-8000-000000000003';
+const PARENT_ID = '01a15000-0000-7000-8000-000000000001';
 
 beforeEach(function () {
     $this->dir = scratchDir();
@@ -40,7 +40,7 @@ it('says who is signed in, with a request signed by the device key', function ()
 
     $response = DevNullServer::tool(Me::class)
         ->assertOk()
-        ->assertSee(['"username":"acme-dev"', '"unread_notifications_count":2']);
+        ->assertSee(['"handle":"acme-dev"', '"unread_notifications_count":0']);
 
     assertMatchesOutputSchema($response, Me::class);
 
@@ -55,8 +55,9 @@ it('reads a log without what only the web renders', function () {
 
     $response = DevNullServer::tool(Log::class, ['log' => 'Latest'])
         ->assertOk()
-        ->assertSee(['"log":"latest"', '"count":3', '"next_cursor":"eyJ', '"poll":{', '"quoted_commit":{', '"reply_preview":[{'])
-        ->assertDontSee(['"body_segments"', '"preview_segments"', '"mentions"', '"avatar_url"']);
+        ->assertSee(['"log":"latest"', '"count":3', '"next_cursor":"eyJ', '"poll":{', '"quoted_commit":{', '"reply_preview":[{',
+            '"type":"organization","handle":"example-org"'])
+        ->assertDontSee(['"body_segments"', '"preview_segments"', '"mentions"', '"guild_mentions"', '"avatar_url"']);
 
     assertMatchesOutputSchema($response, Log::class);
 
@@ -78,7 +79,7 @@ it('lists the replies to a commit given by its link', function () {
 
     $response = DevNullServer::tool(Replies::class, ['commit' => 'https://dev-null.sh/@acme-dev/commits/'.PARENT_ID])
         ->assertOk()
-        ->assertSee(['"commit":"'.PARENT_ID.'"', '"count":1', '"next_cursor":null', '"parent_id":"'.PARENT_ID.'"'])
+        ->assertSee(['"commit":"'.PARENT_ID.'"', '"count":3', '"next_cursor":null', '"parent_id":"'.PARENT_ID.'"'])
         ->assertDontSee('"body_segments"');
 
     assertMatchesOutputSchema($response, Replies::class);

@@ -22,26 +22,26 @@ class PublicApi
     /**
      * @return array<string, mixed>
      */
-    public function user(string $username): array
+    public function user(string $handle): array
     {
-        $username = self::username($username);
+        $handle = self::handle($handle);
 
-        return $this->get("users/{$username}", [], "There is no /dev/null user named {$username}.")['data'];
+        return $this->get("users/{$handle}", [], "There is no /dev/null user named {$handle}.")['data'];
     }
 
     /**
      * @return array{data: list<array<string, mixed>>, next_cursor: ?string}
      */
-    public function userCommits(string $username, bool $replies = false, ?string $cursor = null): array
+    public function userCommits(string $handle, bool $replies = false, ?string $cursor = null): array
     {
-        $username = self::username($username);
+        $handle = self::handle($handle);
 
         if ($cursor !== null && ! preg_match('/^[A-Za-z0-9_=-]+$/', $cursor)) {
             throw new DevNullException('`cursor` must be the `next_cursor` from a previous page, unchanged.');
         }
 
         $query = array_filter(['replies' => $replies ? 1 : null, 'cursor' => $cursor]);
-        $answer = $this->get("users/{$username}/commits", $query, "There is no /dev/null user named {$username}.");
+        $answer = $this->get("users/{$handle}/commits", $query, "There is no /dev/null user named {$handle}.");
 
         return ['data' => $answer['data'], 'next_cursor' => $answer['meta']['next_cursor'] ?? null];
     }
@@ -77,17 +77,17 @@ class PublicApi
         throw new DevNullException('`commit` must be a commit\'s full `id` (a UUID) or its link on dev-null.sh.');
     }
 
-    private static function username(string $username): string
+    private static function handle(string $handle): string
     {
-        $username = ltrim(trim($username), '@');
+        $handle = ltrim(trim($handle), '@');
 
-        // GitHub's own rule, since every /dev/null username is a GitHub one.
-        if (! preg_match('/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/', $username)) {
-            throw new DevNullException('`username` must be a GitHub username, such as the one in a profile link '
-                .'https://dev-null.sh/@username.');
+        // GitHub's own rule, since every /dev/null handle is a GitHub username.
+        if (! preg_match('/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/', $handle)) {
+            throw new DevNullException('`handle` must be a GitHub username, such as the one in a profile link '
+                .'https://dev-null.sh/@handle.');
         }
 
-        return $username;
+        return $handle;
     }
 
     /**

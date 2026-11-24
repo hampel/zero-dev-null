@@ -5,6 +5,20 @@ Notable changes to devnull.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 this project uses [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `login` refused every sign-in with "Unexpected answer from https://dev-null.sh", and `me`, `log`
+  and `replies` printed every author as `@?`, since /dev/null's API renamed `username` to `handle`
+  on 2026-10-26. The MCP tools returned each author without either.
+
+### Changed
+
+- The MCP `user` and `user-commits` tools take `handle` instead of `username`, the name the API
+  now uses, and a commit's author includes its `type`: an organisation can post now, and those
+  tools cannot read one.
+
 ## [1.3.0] - 2026-10-19
 
 ### Added

@@ -1,68 +1,78 @@
 {
     "data": [
         {
-            "id": "01a14974-4031-71b2-a60c-7b3d4a48090d",
-            "short_hash": "a48090d",
+            "id": "01a1456d-ef63-7015-9122-081e1d4b697e",
+            "short_hash": "d4b697e",
             "body": "Example commit 4, as captured but with its text replaced.",
-            "parent_id": "01a14972-333b-73ab-8a0f-573452775ac0",
-            "html_url": "https://dev-null.sh/@acme-dev/commits/01a14974-4031-71b2-a60c-7b3d4a48090d",
-            "created_at": "2026-10-17T10:41:57Z",
+            "guild_handle": null,
+            "guild": null,
+            "parent_id": "01a1456d-8b51-7378-a1f9-84fc1d5ecec2",
+            "html_url": "https://dev-null.sh/@acme-dev/commits/01a1456d-ef63-7015-9122-081e1d4b697e",
+            "created_at": "2026-10-16T15:56:35Z",
             "stars_count": 1,
-            "replies_count": 2,
+            "replies_count": 1,
             "link_preview": null,
             "images": [],
             "author": {
-                "id": "01a13fa8-6cd4-70ef-b8e5-f46a3ca70ca8",
-                "username": "acme-dev",
+                "type": "user",
+                "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+                "handle": "acme-dev",
                 "name": "Acme Developer",
                 "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
-                "bio": "Builds things at Acme.",
-                "company": "Acme",
+                "bio": null,
+                "company": null,
                 "location": "Example City",
                 "website": "https://example.com",
                 "github_url": "https://github.com/acme-dev",
                 "html_url": "https://dev-null.sh/@acme-dev",
                 "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
-                "created_at": "2026-10-15T13:02:44Z"
-            }
+                "created_at": "2026-10-15T13:02:43Z",
+                "live": null
+            },
+            "guild_mentions": []
         },
         {
-            "id": "01a14972-f590-7387-b8c9-c370392a966a",
-            "short_hash": "92a966a",
+            "id": "01a1456c-0065-72f7-a70a-28744ad81e14",
+            "short_hash": "ad81e14",
             "body": "Example commit 5, as captured but with its text replaced.",
-            "parent_id": "01a14971-58c5-7012-a023-ff08be06662c",
-            "html_url": "https://dev-null.sh/@acme-dev/commits/01a14972-f590-7387-b8c9-c370392a966a",
-            "created_at": "2026-10-17T10:40:33Z",
-            "stars_count": 0,
+            "guild_handle": null,
+            "guild": null,
+            "parent_id": "01a1456a-670a-70cb-9d5a-11e32fd6209e",
+            "html_url": "https://dev-null.sh/@acme-dev/commits/01a1456c-0065-72f7-a70a-28744ad81e14",
+            "created_at": "2026-10-16T15:54:28Z",
+            "stars_count": 1,
             "replies_count": 0,
             "link_preview": null,
             "images": [],
             "author": {
-                "id": "01a13fa8-6cd4-70ef-b8e5-f46a3ca70ca8",
-                "username": "acme-dev",
+                "type": "user",
+                "id": "01a13fa8-690d-7327-9af4-dc93977b906c",
+                "handle": "acme-dev",
                 "name": "Acme Developer",
                 "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
-                "bio": "Builds things at Acme.",
-                "company": "Acme",
+                "bio": null,
+                "company": null,
                 "location": "Example City",
                 "website": "https://example.com",
                 "github_url": "https://github.com/acme-dev",
                 "html_url": "https://dev-null.sh/@acme-dev",
                 "feed_url": "https://dev-null.sh/@acme-dev/feed.atom",
-                "created_at": "2026-10-15T13:02:44Z"
-            }
+                "created_at": "2026-10-15T13:02:43Z",
+                "live": null
+            },
+            "guild_mentions": []
         }
     ],
     "links": {
         "first": null,
         "last": null,
-        "prev": null,
+        "prev": "https://dev-null.sh/api/v1/users/acme-dev/commits?replies=1&cursor=eyJjcmVhdGVkX2F0IjoiMjAyNi0xMC0xNiAxNTo1NjozNSIsImlkIjoiMDFhMTQ1NmQtZWY2My03MDE1LTkxMjItMDgxZTFkNGI2OTdlIiwiX3BvaW50c1RvTmV4dEl0ZW1zIjpmYWxzZX0",
         "next": null
     },
     "meta": {
         "path": "https://dev-null.sh/api/v1/users/acme-dev/commits",
         "per_page": 20,
         "next_cursor": null,
-        "prev_cursor": null
+        "prev_cursor": "eyJjcmVhdGVkX2F0IjoiMjAyNi0xMC0xNiAxNTo1NjozNSIsImlkIjoiMDFhMTQ1NmQtZWY2My03MDE1LTkxMjItMDgxZTFkNGI2OTdlIiwiX3BvaW50c1RvTmV4dEl0ZW1zIjpmYWxzZX0"
     }
 }

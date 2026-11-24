@@ -19,7 +19,7 @@ afterEach(fn () => cleanupDir($this->dir));
 
 it('makes a device key and redeems the code with a request that verifies in devnull-api', function () {
     Http::fake(['dev-null.sh/api/v1/devices' => Http::response([
-        'data' => ['username' => 'acme-dev', 'name' => 'Acme Dev'],
+        'data' => ['handle' => 'acme-dev', 'name' => 'Acme Dev'],
         'unread_notifications_count' => 0,
     ])]);
 
@@ -62,7 +62,7 @@ it('makes a device key and redeems the code with a request that verifies in devn
 
 it('reuses the device key it made before', function () {
     $fingerprint = PublicKey::fromFile(throwawayKey($this->dir, 'device_ed25519'))->fingerprint();
-    Http::fake(['dev-null.sh/*' => Http::response(['data' => ['username' => 'acme-dev', 'name' => '']])]);
+    Http::fake(['dev-null.sh/*' => Http::response(['data' => ['handle' => 'acme-dev', 'name' => '']])]);
 
     $this->artisan('login')
         ->doesntExpectOutputToContain('Made a device key')

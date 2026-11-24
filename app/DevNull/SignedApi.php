@@ -27,7 +27,7 @@ class SignedApi
     {
         $user = $this->send($key, 'POST', 'devices', ['code' => $code, 'code_verifier' => $verifier])['data'] ?? null;
 
-        if (! is_array($user) || ! is_string($user['username'] ?? null)) {
+        if (! is_array($user) || ! is_string($user['handle'] ?? null)) {
             throw new DevNullException("Unexpected answer from {$this->url}.");
         }
 

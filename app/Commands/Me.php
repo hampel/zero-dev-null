@@ -36,7 +36,7 @@ class Me extends Command
         $text = fn (mixed $value) => OutputFormatter::escape(Client::sanitize((string) $value));
         $name = is_string($user['name'] ?? null) && $user['name'] !== '' ? $text($user['name']).' ' : '';
 
-        $this->line("{$name}<fg=cyan>@{$text($user['username'] ?? '?')}</>");
+        $this->line("{$name}<fg=cyan>@{$text($user['handle'] ?? '?')}</>");
         $this->line('<fg=gray>'.$text($user['html_url'] ?? '').'</>');
         $this->line(implode(' · ', [
             (int) ($user['commits_count'] ?? 0).' commits and replies',

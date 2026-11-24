@@ -24,7 +24,7 @@ class Present
 
     /**
      * A commit on its own, with only enough of its author to say who wrote it and where to
-     * look them up - the user tool has the rest.
+     * look them up - the user tool has the rest, unless the author is an organization.
      *
      * @param  array<string, mixed>  $commit
      * @return array<string, mixed>
@@ -33,26 +33,37 @@ class Present
     {
         $author = (array) ($commit['author'] ?? []);
 
-        $commit['author'] = array_intersect_key($author, array_flip(['username', 'name', 'html_url']));
+        $commit['author'] = array_intersect_key($author, array_flip(['type', 'handle', 'name', 'html_url']));
 
         return $commit;
     }
 
     /**
      * A commit from the signed API. It carries what the web renders a card from: the body cut
-     * into segments, a list excerpt and mention offsets, all of which `body` already holds, so
-     * they go. The quoted commit and the replies previewed under it are shaped the same way, and
-     * the preview becomes a plain list - the replies tool pages through the rest.
+     * into segments, a list excerpt, and mention offsets in the body and in each poll option,
+     * all of which the text already holds, so they go. The quoted commit and the replies
+     * previewed under it are shaped the same way, and the preview becomes a plain list - the
+     * replies tool pages through the rest.
      *
      * @param  array<string, mixed>  $commit
      * @return array<string, mixed>
      */
     public static function signed(array $commit): array
     {
-        unset($commit['body_segments'], $commit['preview_segments'], $commit['mentions']);
+        unset($commit['body_segments'], $commit['preview_segments'], $commit['mentions'], $commit['guild_mentions']);
 
         if (is_array($commit['author'] ?? null)) {
             $commit = self::commit($commit);
+        }
+
+        if (is_array($commit['poll']['options'] ?? null)) {
+            $commit['poll']['options'] = array_map(function (mixed $option) {
+                if (is_array($option)) {
+                    unset($option['guild_mentions']);
+                }
+
+                return $option;
+            }, $commit['poll']['options']);
         }
 
         if (is_array($commit['quoted_commit'] ?? null)) {

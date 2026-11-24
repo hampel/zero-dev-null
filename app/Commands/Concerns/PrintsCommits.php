@@ -22,7 +22,7 @@ trait PrintsCommits
         $stars = self::count((int) ($commit['stars_count'] ?? 0), 'star');
 
         $meta = array_filter([
-            '<fg=cyan>@'.$this->text((string) ($commit['author']['username'] ?? '?')).'</>',
+            '<fg=cyan>@'.$this->text((string) ($commit['author']['handle'] ?? '?')).'</>',
             is_string($commit['created_at'] ?? null) ? Carbon::parse($commit['created_at'])->diffForHumans() : null,
             ($commit['status'] ?? 'approved') !== 'approved' ? '<fg=yellow>'.$this->text((string) $commit['status']).'</>' : null,
             ($commit['deleted_at'] ?? null) !== null ? '<fg=red>deleted</>' : null,

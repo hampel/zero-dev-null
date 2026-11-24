@@ -108,10 +108,17 @@ read, which is not in the README at all.
   anything else. Testing the removal in a checkout by forcing the condition on is safe only for
   `list` - run a generator before the removal works and it writes into `app/`, which happened once
   on 2026-10-18.
-- **`tests/Fixtures/*.json` are captured responses**, taken 2026-10-18 with the people and their
-  text replaced by `acme-dev` and example values; `me`, `log-latest` and `replies` were taken
-  signed on 2026-10-19, with ids, cursors and poll options replaced too. Refresh one by capturing
-  again and applying the same replacement, never by editing a shape to make a test pass.
+- **`tests/Fixtures/*.json` are captured responses**, last taken 2026-11-24, with the people and
+  their text replaced by `acme-dev`, `example-dev`, `example-org` and example values; the signed
+  ones, `me`, `log-latest` and `replies`, have their ids, cursors and poll options replaced too.
+  Refresh one by capturing again and applying the same replacement, never by editing a shape to
+  make a test pass.
+- **The fixtures freeze the API's shape, so the suite cannot see the site change it.** On
+  2026-10-26 the API renamed `username` to `handle` (dev-null-sh/dev-null.sh#1179). Released
+  1.3.0 then printed every author as `@?` and refused every new `login`, and the suite went on
+  passing for a month. Running `me` and `log` against the site found it. Do that before a release,
+  since CI cannot reach the site. An author can also be an organisation now, which the public
+  `user` tools cannot read; the API has `organizations/{handle}` for that.
 
 ## A tag push is the release
 

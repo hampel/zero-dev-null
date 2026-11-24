@@ -161,7 +161,7 @@ same command.
 | `log` | `login` | the following, latest or trending log as the web shows it to you, 20 at a time |
 | `replies` | `login` | the replies to a commit, 50 at a time |
 
-**Without `login`, an agent starts from a username**: the public API has no log, search or replies
+**Without `login`, an agent starts from a handle**: the public API has no log, search or replies
 to a commit. It allows 60 requests a minute per IP, shared with anything else on the machine
 calling it; signed requests are allowed 120 a minute for your account.
 
