@@ -35,7 +35,7 @@ key on the machine to a third party. Both are the user's to run — give them th
 ## A device key can post as the user
 
 `login` runs the OAuth authorization code flow with PKCE that the site built for its phone app
-(nunomaduro/dev-null.sh#130), and the key it gets approved signs every `/api/v1` request in the
+(dev-null-sh/dev-null.sh#130), and the key it gets approved signs every `/api/v1` request in the
 `devnull-api` namespace. **Approved, that key reads and posts as the user with no GitHub key
 involved**, so:
 
@@ -52,7 +52,7 @@ involved**, so:
   greyed out, nothing else — so the address bar is no route; copying the `location` header from
   the Network tab worked, and the approved key then answered a signed `GET /api/v1/me`. The real
   fix is the site accepting a loopback `redirect_uri` (RFC 8252), which is upstream's to make:
-  proposed in nunomaduro/dev-null.sh#563 on 2026-10-19. If it lands, `login` should listen on a
+  proposed in dev-null-sh/dev-null.sh#563 on 2026-10-19. If it lands, `login` should listen on a
   random local port and catch the code itself, and the paste and the README's DevTools steps go.
 
 ## The signature is tested for real, not mocked
@@ -80,14 +80,14 @@ deliberately, once — ever sends the list. Do not add a fallback to the lookup 
 `php devnull mcp:start devnull` serves `App\Mcp\Servers\DevNullServer` over stdio. Three tools wrap
 the public `GET /api/v1` endpoints in `App\DevNull\PublicApi`, and three more read as the user
 through `App\DevNull\Account`, signed by the device key. The site's own README is the contract
-for them, and the site's source (nunomaduro/dev-null.sh on GitHub) settles a question the README
+for them, and the site's source (dev-null-sh/dev-null.sh on GitHub) settles a question the README
 does not, as it did for what `commits_count` counts — and that listing notifications marks them
 read, which is not in the README at all.
 
 - **A tool is read-only when reading changes nothing on the site, not when it is a GET.**
   `GET /api/v1/notifications` marks every notification read, as the web does, so there is no
   notifications tool, and the group endpoint is useless without it. Check the controller before
-  wrapping any new signed endpoint: the PR that added them (nunomaduro/dev-null.sh#130) is where
+  wrapping any new signed endpoint: the PR that added them (dev-null-sh/dev-null.sh#130) is where
   to start.
 
 - **Every tool is read-only, and the server has no way to post.** `tests/Feature/McpServerTest.php`
